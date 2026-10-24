@@ -72,7 +72,7 @@ try {
     await b.hover();states.hover=await b.evaluate(e=>({color:getComputedStyle(e).color,height:e.getBoundingClientRect().height}));
     await b.focus();await page.keyboard.press('Shift+Tab');await page.keyboard.press('Tab');states.focus=await b.evaluate(e=>({focused:document.activeElement===e,color:getComputedStyle(e).color,outline:getComputedStyle(e).outlineStyle}));
     await b.evaluate(e=>e.scrollIntoView({block:'center',inline:'nearest'}));
-    const box=await b.boundingBox();
+    const box=await b.evaluate(e=>{const r=[...e.getClientRects()].find(r=>r.width>0&&r.height>0);return r?{x:r.x,y:r.y,width:r.width,height:r.height}:null;});
     if(box){await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();states.active=await b.evaluate(e=>({active:e.matches(':active'),color:getComputedStyle(e).color}));await page.mouse.move(1,1);await page.mouse.up();}
     for(const state of ['hover','focus','active'])check(states[state]?.color===expected,`${state}: link contrast changed`);
     check(states.active?.active===true,'Active state was not actually achieved');
