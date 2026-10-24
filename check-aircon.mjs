@@ -32,7 +32,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  winnerPanel:[...root.querySelectorAll('.winner')].map(e=>({...rect(e),inner:e.clientWidth-parseFloat(getComputedStyle(e).paddingLeft)-parseFloat(getComputedStyle(e).paddingRight)})),winnerCopy:group('.winner-copy'),cards:group('.quick-pick'),labels:group('.quick-label-row'),primary:group('.quick-actions>.retailer-primary'),secondary:group('.quick-actions>.retailer-secondary,.quick-actions>.quick-status'),
  controls:[...root.querySelectorAll('.quick-button,.buy-button,.quick-status,.buy-status')].map(e=>({...rect(e),text:e.innerText,color:getComputedStyle(e).color})),
  images:[...document.querySelectorAll('img')].filter(e=>root.contains(e)||e.currentSrc.includes('mitsubishi-ap50-home-comfort-featured')).map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,w:e.naturalWidth,h:e.naturalHeight,alt:e.alt})),
- textOverflow,headings:[...root.querySelectorAll('h2,h3')].map(e=>e.innerText),
+ tableTextOverflow:[...root.querySelectorAll('td')].filter(e=>{const b=e.getBoundingClientRect();const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].some(r=>r.left<b.left-1||r.right>b.right+1);}).map(e=>e.innerText),productGrids:[...root.querySelectorAll('.product-layout')].map(e=>getComputedStyle(e).gridTemplateColumns),contentWidth:root.querySelector('.bld-content').clientWidth,textOverflow,headings:[...root.querySelectorAll('h2,h3')].map(e=>e.innerText),
  links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel})),
  outside:[...root.querySelectorAll('p,h2,h3,figure,.quick-picks,.buy-row,.sources')].filter(e=>{const r=e.getBoundingClientRect();return r.left<rr.left-1||r.right>rr.right+1;}).map(e=>e.className||e.tagName)};
  });
@@ -43,6 +43,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  for(const key of ['labels','primary','secondary']){const a=g[key];check(a.length===3,key+' peer count');for(const f of ['w','h','y','bottom'])if(a.length)check(Math.max(...a.map(e=>e[f]))-Math.min(...a.map(e=>e[f]))<=1,key+' unequal '+f);}
  check(g.controls.length===18,'Expected 18 controls including unavailable statuses');
  for(const c of g.controls){check(Math.abs(c.h-64)<=1,'Control height: '+c.text);check(c.color==='rgb(255, 255, 255)','Control text color: '+c.text);}
+ check(!g.tableTextOverflow.length,'Table cell text overlap: '+g.tableTextOverflow.join(';'));if(g.contentWidth<=620)check(g.productGrids.every(s=>s.trim().split(/\s+/).length===1),'Product details must stack in narrow article columns');
  check(!g.textOverflow.length,'Text overflow: '+g.textOverflow.join(';'));check(!g.outside.length,'Elements outside article: '+g.outside.join(';'));
  check(g.images.length>=7&&g.images.every(e=>e.loaded&&e.alt),'Missing/broken images or alt');
  const hero=g.images.find(e=>e.src.includes('mitsubishi-ap50-home-comfort-featured'));check(hero&&Math.abs(hero.w/hero.h-1.5)<.01,'Hero ratio not3:2');
