@@ -12,6 +12,7 @@ const checks=[...[360,390,480,680,1366].map(width=>({width})),{width:1366,column
 try {
  for(const test of checks){
   const name=`${test.width}${test.column?'-column-'+test.column:''}`;
+  console.log(`Starting ${name}`);
   const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
   const page=await context.newPage();
   const record={...test,name,url,status:'CHECK_INCOMPLETE',errors:[],screenshots:[]};
@@ -31,7 +32,8 @@ try {
     await page.evaluate(y=>scrollTo(0,y),y);
     await page.waitForTimeout(90);
    }
-   await article.locator('img').evaluateAll(async imgs=>{await Promise.all(imgs.map(im=>im.decode().catch(()=>{})));});
+   await article.locator('img').evaluateAll(async imgs=>{await Promise.race([Promise.all(imgs.filter(im=>im.getClientRects().length>0).map(im=>im.decode().catch(()=>{}))),new Promise(resolve=>setTimeout(resolve,15000))]);});
+   console.log(`${name}: images inspected`);
    record.geometry=await article.evaluate(root=>{
     const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom};};
     const groups=selector=>[...root.querySelectorAll(selector)].map(e=>({text:e.textContent.trim(),...rect(e)}));
@@ -87,7 +89,7 @@ try {
    record.notChecked=['Visited-link appearance requires actual visual review','Screenshot evidence requires ChatGPT visual review','Exact product identity, stock, warranty and commission eligibility require the separate research workflow'];
    record.status=record.errors.length?'FAIL':'AUTOMATED_ASSERTIONS_PASSED_VISUAL_REVIEW_REQUIRED';
   }catch(e){record.errors.push(String(e));record.status='FAIL';}
-  finally{await context.close();await fs.writeFile('results/report.json',JSON.stringify({url,results},null,2));}
+  finally{console.log(`${name}: ${record.status}`,record.errors);await context.close();await fs.writeFile('results/report.json',JSON.stringify({url,results},null,2));}
  }
 }finally{await browser.close();}
 const failed=results.some(r=>r.errors.length);
