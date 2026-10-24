@@ -53,6 +53,9 @@ jobs:
                       g=rec['geometry']['article']
                       left=max(0,int(g['x'])-8)
                       frame=frame.crop((left,0,min(frame.width,left+int(g['w'])+16),frame.height))
+                  pixels=list(frame.resize((64,64)).getdata())
+                  if sum(max(p)<25 for p in pixels)/len(pixels)>.8:
+                      raise RuntimeError('Invalid black screenshot capture: '+path)
                   tiles.append(frame)
               tileh=900
               tilew=max(t.width for t in tiles)
