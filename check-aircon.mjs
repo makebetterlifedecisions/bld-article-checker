@@ -2,7 +2,7 @@ import {chromium} from 'playwright';
 import fs from 'node:fs/promises';
 await fs.mkdir('results',{recursive:true});
 const url='https://www.betterlifedecisions.com.au/blogs/buying-guides/best-air-conditioner-type-australian-homes';
-const browser=await chromium.launch({args:['--disable-gpu']});
+const browser=await chromium.launch();
 const records=[];
 try{
 for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}]){
@@ -13,7 +13,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
  const article=page.locator('#bld-air-conditioning-types');await article.waitFor();
- await page.addStyleTag({content:'html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}'});
+ await page.addStyleTag({content:'html{scroll-behavior:auto!important}'});
  if(test.column)await article.evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important');},test.column);
  await page.evaluate(()=>document.fonts.ready);
  for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=650){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(100);}
