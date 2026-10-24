@@ -1,0 +1,832 @@
+<style>#bld-air-conditioning-types.bld-best-picks { position: relative; box-sizing: border-box; width: 100%; max-width: 1040px; padding: 32px; overflow: visible; border: 1px solid rgba(45, 122, 85, 0.18); border-radius: 26px; background: rgba(245, 250, 248, 0.74); color: rgb(34, 34, 34); font-family: Arial, Helvetica, sans-serif; font-size: 18px; line-height: 1.55; overflow-wrap: normal; word-break: normal; box-shadow: rgba(23, 50, 77, 0.08) 0px 14px 38px; margin: 0px auto !important; }
+#bld-air-conditioning-types.bld-best-picks * { box-sizing: border-box; }
+#bld-air-conditioning-types.bld-best-picks::before { content: ""; position: absolute; inset: 0px; pointer-events: none; opacity: 0.38; background-image: linear-gradient(rgba(23, 50, 77, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(23, 50, 77, 0.035) 1px, transparent 1px), radial-gradient(circle, rgba(45, 122, 85, 0.1) 1.5px, transparent 2px); background-size: 52px 52px, 52px 52px, 26px 26px; }
+#bld-air-conditioning-types.bld-best-picks .bld-content { position: relative; z-index: 1; }
+#bld-air-conditioning-types.bld-best-picks h2, #bld-air-conditioning-types.bld-best-picks h3, #bld-air-conditioning-types.bld-best-picks h4 { line-height: 1.25; color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types.bld-best-picks h2 { margin: 1.65em 0px 0.75em; padding-bottom: 0.35em; border-bottom: 2px solid rgba(23, 50, 77, 0.12); font-size: 1.52em; }
+#bld-air-conditioning-types.bld-best-picks h3 { margin: 0px 0px 0.55em; font-size: 1.25em; }
+#bld-air-conditioning-types.bld-best-picks p { margin: 0.75em 0px; }
+#bld-air-conditioning-types.bld-best-picks li { margin: 0.32em 0px; }
+#bld-air-conditioning-types.bld-best-picks img { display: block; max-width: 100%; height: auto; }
+#bld-air-conditioning-types.bld-best-picks a { text-decoration: none !important; }
+#bld-air-conditioning-types.bld-best-picks .section-kicker { display: block; margin-bottom: 7px; font-size: 0.74em; font-weight: 800; text-align: center; text-transform: uppercase; letter-spacing: 0.14em; color: rgb(45, 122, 85) !important; }
+#bld-air-conditioning-types.bld-best-picks .top-heading { margin: 0px 0px 0.75em; padding: 0px; border: 0px; font-size: 1.5em; text-align: center; }
+#bld-air-conditioning-types.bld-best-picks .top-heading::after { content: ""; display: block; width: 70px; height: 4px; margin: 11px auto 0px; border-radius: 999px; background: linear-gradient(90deg, rgb(45, 122, 85), rgb(87, 201, 164)); }
+#bld-air-conditioning-types.bld-best-picks .price-status { margin: 1em 0px 1.4em; padding: 0.9em 1em; border-width: 1px 1px 1px 5px; border-style: solid; border-color: rgb(230, 202, 145) rgb(230, 202, 145) rgb(230, 202, 145) rgb(212, 155, 44); border-image: none; border-radius: 0px 12px 12px 0px; background: rgb(255, 248, 232); font-size: 0.86em; color: rgb(92, 73, 36) !important; }
+#bld-air-conditioning-types.bld-best-picks .winner { position: relative; display: grid; grid-template-columns: 150px minmax(0px, 1fr); gap: 22px; align-items: center; margin: 1.4em 0px; padding: 1.15em; overflow: hidden; border: 1px solid rgba(87, 201, 164, 0.58); border-radius: 18px; background: radial-gradient(circle at 92% 10%, rgba(87, 201, 164, 0.27), transparent 30%), linear-gradient(135deg, rgb(23, 50, 77), rgb(33, 73, 99)); box-shadow: rgba(23, 50, 77, 0.16) 0px 12px 28px; }
+#bld-air-conditioning-types.bld-best-picks .winner::after { content: "★"; position: absolute; right: 15px; bottom: -34px; color: rgb(255, 255, 255); font-size: 135px; line-height: 1; opacity: 0.04; }
+#bld-air-conditioning-types.bld-best-picks .winner-image { position: relative; z-index: 1; display: flex; width: 150px; height: 150px; align-items: center; justify-content: center; padding: 8px; border-radius: 14px; background: rgb(255, 255, 255); }
+#bld-air-conditioning-types.bld-best-picks .winner-image img { width: 100%; height: 100%; object-fit: contain; }
+#bld-air-conditioning-types.bld-best-picks .winner-copy { position: relative; z-index: 1; min-width: 0px; }
+#bld-air-conditioning-types.bld-best-picks .winner-kicker { display: block; margin-bottom: 4px; font-size: 0.75em; font-weight: 800; text-transform: uppercase; letter-spacing: 0.12em; color: rgb(112, 223, 187) !important; -webkit-text-fill-color: rgb(112, 223, 187) !important; }
+#bld-air-conditioning-types.bld-best-picks .winner h3, #bld-air-conditioning-types.bld-best-picks .winner p { color: rgb(255, 255, 255) !important; -webkit-text-fill-color: rgb(255, 255, 255) !important; }
+#bld-air-conditioning-types.bld-best-picks .winner h3 { margin: 0.15em 0px 0.35em; font-size: 1.38em; overflow-wrap: normal; }
+#bld-air-conditioning-types.bld-best-picks .fancy-card { position: relative; overflow: hidden; border: 1px solid rgba(23, 50, 77, 0.11); background: radial-gradient(circle at 96% 8%, rgba(87, 201, 164, 0.12), transparent 24%), linear-gradient(145deg, rgb(255, 255, 255), rgb(251, 253, 253)); box-shadow: rgba(23, 50, 77, 0.07) 0px 7px 20px; }
+#bld-air-conditioning-types.bld-best-picks .intro-card, #bld-air-conditioning-types.bld-best-picks .info-card { margin: 1.2em 0px; padding: 1.05em 1.15em; border-radius: 15px; }
+#bld-air-conditioning-types.bld-best-picks .product { position: relative; margin: 1.5em 0px; overflow: visible; border: 1px solid rgba(23, 50, 77, 0.13); border-radius: 18px; background: linear-gradient(145deg, rgb(255, 255, 255), rgb(251, 253, 252)); box-shadow: rgba(23, 50, 77, 0.1) 0px 11px 28px; }
+#bld-air-conditioning-types.bld-best-picks .product-head { position: relative; padding: 1em 1.15em; overflow: hidden; background: radial-gradient(circle at 94% 25%, rgba(87, 201, 164, 0.23), transparent 28%), linear-gradient(130deg, rgb(23, 50, 77), rgb(36, 86, 117)); }
+#bld-air-conditioning-types.bld-best-picks .product-head h3 { position: relative; z-index: 1; margin: 0.4em 0px 0px; font-size: 1.38em; color: rgb(255, 255, 255) !important; -webkit-text-fill-color: rgb(255, 255, 255) !important; }
+#bld-air-conditioning-types.bld-best-picks .product-label { position: relative; z-index: 1; display: inline-block; padding: 0.25em 0.75em; border-radius: 999px; background: rgb(87, 201, 164); font-size: 0.69em; font-weight: 800; text-transform: uppercase; color: rgb(16, 43, 63) !important; -webkit-text-fill-color: rgb(16, 43, 63) !important; }
+#bld-air-conditioning-types.bld-best-picks .product-body { padding: 1.15em; }
+#bld-air-conditioning-types.bld-best-picks .product-layout { display: grid; grid-template-columns: minmax(0px, 38%) minmax(0px, 1fr); gap: 1.3em; align-items: start; }
+#bld-air-conditioning-types.bld-best-picks .product-media { margin: 0px; }
+#bld-air-conditioning-types.bld-best-picks .product-image { display: flex; min-height: 300px; align-items: center; justify-content: center; padding: 16px; border: 1px solid rgb(227, 233, 237); border-radius: 14px; background: rgb(255, 255, 255); box-shadow: rgb(250, 252, 252) 0px 0px 0px 5px inset; }
+#bld-air-conditioning-types.bld-best-picks .product-image img { width: 100%; max-height: 330px; object-fit: contain; }
+#bld-air-conditioning-types.bld-best-picks .product-caption { margin: 8px 2px 0px; font-size: 0.72em; line-height: 1.35; text-align: center; color: rgb(104, 116, 125) !important; }
+#bld-air-conditioning-types.bld-best-picks .summary-line { font-size: 1.02em; font-weight: 800; margin: 0.1em 0px 0.75em !important; color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types.bld-best-picks .badges { display: flex; flex-wrap: wrap; gap: 7px; margin: 0.7em 0px 0.9em; }
+#bld-air-conditioning-types.bld-best-picks .badge { display: inline-block; padding: 0.3em 0.72em; border: 1px solid rgb(199, 220, 227); border-radius: 999px; background: rgb(238, 246, 247); font-size: 0.72em; font-weight: 700; color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types.bld-best-picks .pros-cons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 12px; margin: 1em 0px; }
+#bld-air-conditioning-types.bld-best-picks .mini-box { padding: 0.88em; border-radius: 12px; }
+#bld-air-conditioning-types.bld-best-picks .mini-box h4 { margin: 0px 0px 0.45em; font-size: 0.94em; }
+#bld-air-conditioning-types.bld-best-picks .mini-box ul { margin: 0.25em 0px 0px; padding-left: 1.25em; }
+#bld-air-conditioning-types.bld-best-picks .pros-box { border: 1px solid rgb(201, 227, 213); background: rgb(240, 248, 243); color: rgb(23, 95, 66) !important; }
+#bld-air-conditioning-types.bld-best-picks .cons-box { border: 1px solid rgb(234, 210, 191); background: rgb(255, 246, 239); color: rgb(138, 61, 19) !important; }
+#bld-air-conditioning-types.bld-best-picks .best-for { margin: 1em 0px; padding: 0.85em 0.95em; border-left: 5px solid rgb(24, 116, 166); border-radius: 0px 10px 10px 0px; background: rgb(237, 246, 251); }
+#bld-air-conditioning-types.bld-best-picks .check-list { padding: 1em 1.15em; border-radius: 15px; }
+#bld-air-conditioning-types.bld-best-picks .check-list ul { margin: 0.2em 0px; padding-left: 1.3em; }
+#bld-air-conditioning-types.bld-best-picks .verdict { position: relative; margin: 1.5em 0px; padding: 1.25em; overflow: hidden; border-radius: 18px; background: radial-gradient(circle at 95% 0px, rgba(87, 201, 164, 0.3), transparent 30%), linear-gradient(135deg, rgb(23, 50, 77), rgb(16, 42, 64)); box-shadow: rgba(23, 50, 77, 0.17) 0px 12px 28px; }
+#bld-air-conditioning-types.bld-best-picks .verdict, #bld-air-conditioning-types.bld-best-picks .verdict * { color: rgb(255, 255, 255) !important; -webkit-text-fill-color: rgb(255, 255, 255) !important; }
+#bld-air-conditioning-types.bld-best-picks .verdict h2 { margin-top: 0px; border-bottom-color: rgba(255, 255, 255, 0.25); }
+#bld-air-conditioning-types.bld-best-picks .sources { font-size: 0.86em; color: rgb(77, 89, 99) !important; }
+@media (max-width: 680px) {#bld-air-conditioning-types.bld-best-picks { padding: 18px 10px; border-radius: 18px; font-size: 16px; line-height: 1.48; }
+#bld-air-conditioning-types.bld-best-picks h2 { margin-top: 1.45em; font-size: 1.34em; }
+#bld-air-conditioning-types.bld-best-picks .top-heading { font-size: 1.26em; }
+#bld-air-conditioning-types.bld-best-picks .winner { grid-template-columns: 1fr; gap: 12px; padding: 0.9em; text-align: center; }
+#bld-air-conditioning-types.bld-best-picks .winner-image { width: 150px; height: 150px; margin: 0px auto; }
+#bld-air-conditioning-types.bld-best-picks .winner h3 { font-size: 1.2em; }
+#bld-air-conditioning-types.bld-best-picks .winner p { font-size: 0.9em; }
+#bld-air-conditioning-types.bld-best-picks .product-head { padding: 0.88em 1em; }
+#bld-air-conditioning-types.bld-best-picks .product-head h3 { font-size: 1.22em; }
+#bld-air-conditioning-types.bld-best-picks .product-body { padding: 0.95em; }
+#bld-air-conditioning-types.bld-best-picks .product-layout { grid-template-columns: 1fr; gap: 0.9em; }
+#bld-air-conditioning-types.bld-best-picks .product-image { min-height: 0px; padding: 10px; }
+#bld-air-conditioning-types.bld-best-picks .product-image img { max-height: 300px; }
+}
+#bld-air-conditioning-types { max-width: 100%; min-width: 0px; overflow: visible; overflow-wrap: anywhere; }
+#bld-air-conditioning-types .bld-content { min-width: 0px; max-width: 100%; }
+#bld-air-conditioning-types.bld-best-picks .winner { display: flex; flex-direction: column; align-items: center; text-align: center; }
+#bld-air-conditioning-types.bld-best-picks .winner-image { width: min(300px, 100%); height: auto; aspect-ratio: 1 / 1; margin: 0px auto; }
+#bld-air-conditioning-types.bld-best-picks .winner-image img { width: 100%; height: 100%; object-fit: contain; }
+#bld-air-conditioning-types .winner-caption { position: relative; z-index: 1; font-size: 0.85em; text-align: center; margin: 7px 0px 0px !important; color: rgb(255, 255, 255) !important; -webkit-text-fill-color: rgb(255, 255, 255) !important; }
+#bld-air-conditioning-types .winner-copy { width: 100%; min-width: 0px; }
+#bld-air-conditioning-types figure.support-media { width: 100%; max-width: 760px; min-width: 0px; margin: 1.5em auto; }
+#bld-air-conditioning-types .support-media img { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 14px; background: rgb(255, 255, 255); }
+#bld-air-conditioning-types .support-media.diagram { max-width: 480px; }
+#bld-air-conditioning-types .support-media.diagram img { max-height: none; }
+#bld-air-conditioning-types figcaption { max-width: 100%; margin: 7px auto 0px; color: rgb(77, 89, 99); font-size: 0.78em; line-height: 1.4; text-align: center; overflow-wrap: anywhere; }
+#bld-air-conditioning-types .product { width: 100%; min-width: 0px; max-width: 100%; overflow: visible; }
+#bld-air-conditioning-types .product-head, #bld-air-conditioning-types .product-body, #bld-air-conditioning-types .product-layout, #bld-air-conditioning-types .product-media, #bld-air-conditioning-types .product-copy { min-width: 0px; max-width: 100%; box-sizing: border-box; }
+#bld-air-conditioning-types .product-body { container-type: inline-size; }
+#bld-air-conditioning-types .product-layout { width: 100%; grid-template-columns: minmax(0px, 38%) minmax(0px, 1fr); align-items: start; }
+#bld-air-conditioning-types .product-media { width: 100%; margin: 0px; }
+#bld-air-conditioning-types .product-image { width: 100%; min-width: 0px; max-width: 100%; min-height: 0px; height: auto; aspect-ratio: 1 / 1; max-height: 300px; padding: 12px; overflow: visible; }
+#bld-air-conditioning-types .product-image img { display: block; width: auto; max-width: 100%; height: auto; max-height: 100%; object-fit: contain; }
+#bld-air-conditioning-types .product-caption { width: 100%; max-width: 100%; text-align: center; white-space: normal; overflow-wrap: anywhere; margin: 7px 0px 0px !important; }
+#bld-air-conditioning-types .pros-cons { min-width: 0px; width: 100%; max-width: 100%; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); }
+#bld-air-conditioning-types .mini-box, #bld-air-conditioning-types .mini-box ul, #bld-air-conditioning-types .mini-box li { min-width: 0px; max-width: 100%; overflow-wrap: anywhere; }
+@container (max-width: 620px) {#bld-air-conditioning-types .product-layout { grid-template-columns: minmax(0px, 1fr); }
+#bld-air-conditioning-types .product-image { width: min(100%, 300px); margin: 0px auto; }
+}
+#bld-air-conditioning-types .callout { padding: 1em 1.1em; margin: 1.25em 0px; border-left: 5px solid rgb(24, 116, 166); border-radius: 0px 10px 10px 0px; background: rgb(238, 246, 251); color: rgb(23, 50, 77); }
+#bld-air-conditioning-types .callout.pick { border-color: rgb(45, 122, 85); background: rgb(240, 248, 243); }
+#bld-air-conditioning-types .callout.warning { border-color: rgb(198, 93, 24); background: rgb(255, 245, 233); }
+#bld-air-conditioning-types .scroll { width: 100%; overflow-x: auto; margin: 1.1em 0px; }
+#bld-air-conditioning-types table { width: 100%; border-collapse: collapse; margin: 0px; font-size: 0.9em; }
+#bld-air-conditioning-types table, #bld-air-conditioning-types thead, #bld-air-conditioning-types tbody, #bld-air-conditioning-types tr, #bld-air-conditioning-types td, #bld-air-conditioning-types tbody tr:nth-child(2n+1), #bld-air-conditioning-types tbody tr:nth-child(2n+1) td { background: rgb(255, 255, 255) !important; color: rgb(34, 34, 34) !important; -webkit-text-fill-color: rgb(34, 34, 34) !important; }
+#bld-air-conditioning-types tbody tr:nth-child(2n), #bld-air-conditioning-types tbody tr:nth-child(2n) td { background: rgb(245, 248, 250) !important; color: rgb(34, 34, 34) !important; -webkit-text-fill-color: rgb(34, 34, 34) !important; }
+#bld-air-conditioning-types tbody tr:hover, #bld-air-conditioning-types tbody tr:hover td { background: rgb(245, 248, 250) !important; color: rgb(34, 34, 34) !important; -webkit-text-fill-color: rgb(34, 34, 34) !important; }
+#bld-air-conditioning-types table th, #bld-air-conditioning-types table thead th { background: rgb(238, 244, 247) !important; color: rgb(23, 50, 77) !important; -webkit-text-fill-color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types table th, #bld-air-conditioning-types table td { border: 1px solid rgb(215, 224, 230); padding: 0.65em; vertical-align: top; text-align: left; }
+#bld-air-conditioning-types table td *, #bld-air-conditioning-types table td p, #bld-air-conditioning-types table td li, #bld-air-conditioning-types table td strong { color: rgb(34, 34, 34) !important; -webkit-text-fill-color: rgb(34, 34, 34) !important; }
+#bld-air-conditioning-types table th *, #bld-air-conditioning-types table th a { color: rgb(23, 50, 77) !important; -webkit-text-fill-color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types table td a { color: rgb(7, 95, 155) !important; -webkit-text-fill-color: rgb(7, 95, 155) !important; text-decoration: underline !important; }
+#bld-air-conditioning-types .sources a, #bld-air-conditioning-types .bld-content > p a { color: rgb(7, 95, 155) !important; text-decoration: underline !important; }
+#bld-air-conditioning-types .verdict, #bld-air-conditioning-types .verdict *, #bld-air-conditioning-types .product-head, #bld-air-conditioning-types .product-head * { color: rgb(255, 255, 255) !important; -webkit-text-fill-color: rgb(255, 255, 255) !important; }
+@media (max-width: 680px) {#bld-air-conditioning-types table, #bld-air-conditioning-types thead, #bld-air-conditioning-types tbody, #bld-air-conditioning-types tr, #bld-air-conditioning-types th, #bld-air-conditioning-types td { display: block; }
+#bld-air-conditioning-types table thead { position: absolute; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; white-space: nowrap; }
+#bld-air-conditioning-types table tr { margin: 0px 0px 0.85em; border: 1px solid rgb(215, 224, 230); }
+#bld-air-conditioning-types table td { border-width: 0px 0px 1px; border-style: none none solid; border-color: currentcolor currentcolor rgb(215, 224, 230); border-image: none; }
+#bld-air-conditioning-types table td:last-child { border-bottom: 0px; }
+#bld-air-conditioning-types table td::before { content: attr(data-label); display: block; margin-bottom: 0.12em; font-weight: 800; color: rgb(23, 50, 77) !important; -webkit-text-fill-color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types .support-media.diagram { max-width: 100%; }
+}
+@media (max-width: 480px) {#bld-air-conditioning-types .product-image { max-height: 240px; }
+}
+
+/* Approved locked v1.2 card component. */
+
+
+#bld-air-conditioning-types .quick-picks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(5,auto);column-gap:16px;row-gap:0;margin:24px 0;align-items:stretch}
+#bld-air-conditioning-types .quick-pick{position:relative;display:grid;grid-template-rows:subgrid;grid-row:1/span 5;min-width:0;border:2px solid #a4b3bf;border-top:5px solid #17324d;border-radius:18px;background:#fff;box-shadow:0 3px 5px rgba(23,50,77,.06),0 12px 25px rgba(23,50,77,.12);overflow:hidden;container-type:inline-size;container-name:bld-bold-card}
+#bld-air-conditioning-types .quick-pick:nth-child(1){grid-column:1}
+#bld-air-conditioning-types .quick-pick:nth-child(2){grid-column:2}
+#bld-air-conditioning-types .quick-pick:nth-child(3){grid-column:3}
+#bld-air-conditioning-types .quick-pick.featured{border-color:#2d7a55;box-shadow:0 3px 5px rgba(23,50,77,.06),0 12px 25px rgba(45,122,85,.17)}
+#bld-air-conditioning-types .quick-image{display:flex;justify-content:center;align-items:center;aspect-ratio:1;width:100%;padding:9px;background:white;border-bottom:1px solid #e3e9ed;min-width:0}
+#bld-air-conditioning-types .quick-image img{width:100%;height:100%;object-fit:contain}
+#bld-air-conditioning-types .quick-name{display:block;min-width:0;margin:0 9px;padding:0;color:#17324d!important;font:800 20px/1.22 Arial,Helvetica,sans-serif;text-align:center;text-wrap:balance;word-break:normal;overflow-wrap:normal}
+#bld-air-conditioning-types .quick-reason{display:block;min-width:0;margin:10px 9px 14px;padding:0;color:#50616f!important;font:400 14px/1.4 Arial,Helvetica,sans-serif;text-align:center;text-wrap:balance;word-break:normal;overflow-wrap:normal}
+#bld-air-conditioning-types .quick-actions{display:flex;flex-direction:column;gap:8px;align-self:start;min-width:0;margin:0 9px 13px;padding-top:13px;border-top:1px solid #d4dee4}
+#bld-air-conditioning-types a.quick-button{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:100%!important;max-width:100%!important;min-width:0!important;height:64px!important;min-height:64px!important;max-height:64px!important;padding:6px!important;margin:0!important;gap:3px!important;border:0!important;border-radius:8px;background:#1874a6!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 0 #11557c;font:800 17px/1.15 Arial,Helvetica,sans-serif!important;text-align:center!important;text-transform:none!important;letter-spacing:normal!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;text-decoration:none!important;transform:none!important}
+#bld-air-conditioning-types a.quick-button.retailer-secondary{background:#2d7a55!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 0 #20583d}
+#bld-air-conditioning-types a.quick-button,#bld-air-conditioning-types a.quick-button:is(:visited,:hover,:focus,:active),#bld-air-conditioning-types a.quick-button *{color:white!important;-webkit-text-fill-color:white!important;opacity:1!important;text-decoration:none!important}
+#bld-air-conditioning-types .quick-button .button-product{display:block!important;font-size:1em!important;font-weight:800!important;line-height:1.15!important;margin:0!important;padding:0!important;max-width:100%;letter-spacing:normal!important}
+#bld-air-conditioning-types .quick-button .button-store{display:block!important;font-size:.84em!important;font-weight:500!important;line-height:1.15!important;margin:0!important;padding:0!important;max-width:100%}
+#bld-air-conditioning-types a.quick-button:hover{filter:brightness(.94)}
+#bld-air-conditioning-types a.quick-button:focus-visible{outline:3px solid #b26a00;outline-offset:3px}
+#bld-air-conditioning-types a.quick-button::before,#bld-air-conditioning-types a.quick-button::after{display:none!important;content:none!important}
+@container  bld-bold-card (max-width:220px){#bld-air-conditioning-types .quick-name{font-size:15px}
+#bld-air-conditioning-types .quick-reason{font-size:12px}
+#bld-air-conditioning-types a.quick-button{font-size:13px!important}
+}
+@container  bld-bold-card (max-width:140px){#bld-air-conditioning-types .quick-name{font-size:12px;margin-left:4px;margin-right:4px}
+#bld-air-conditioning-types .quick-reason{font-size:11px;margin-left:4px;margin-right:4px}
+#bld-air-conditioning-types .quick-actions{margin-left:4px;margin-right:4px}
+#bld-air-conditioning-types a.quick-button{font-size:11px!important}
+#bld-air-conditioning-types .quick-button .button-store{font-size:10px!important}
+#bld-air-conditioning-types .quick-image{padding:5px}
+}
+@media (max-width:680px){#bld-air-conditioning-types .quick-picks{column-gap:7px}
+#bld-air-conditioning-types .quick-pick{border-radius:11px}
+}
+#bld-air-conditioning-types .quick-picks.has-captions{grid-template-rows:repeat(6,auto)}
+#bld-air-conditioning-types .quick-picks.has-captions .quick-pick{grid-row:1/span 6}
+#bld-air-conditioning-types .quick-caption{min-width:0;margin:0 5px 8px;text-align:center;font:400 11px/1.35 Arial,Helvetica,sans-serif;color:#50616f}
+#bld-air-conditioning-types .quick-status{display:flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;width:100%;max-width:100%;min-width:0;height:64px;min-height:64px;max-height:64px;margin:0;padding:6px;border:0;border-radius:8px;background:#2d7a55;color:#fff;-webkit-text-fill-color:#fff;font:500 13px/1.15 Arial,Helvetica,sans-serif;text-align:center;cursor:default;transform:none;transition:none}
+@container  bld-bold-card (max-width:140px){#bld-air-conditioning-types .quick-status{font-size:11px}
+}
+#bld-air-conditioning-types.bld-best-picks{box-sizing:border-box;width:100%;max-width:1040px;min-width:0;margin:0 auto!important;padding:clamp(10px,calc(10% - 18px),32px)}
+#bld-air-conditioning-types .bld-content{min-width:0;max-width:100%}
+@media (max-width:680px){#bld-air-conditioning-types.bld-best-picks{padding:18px 10px}
+}
+
+/* v1.1: the shaded background belongs to a stretched DIV, never a content-sized SPAN. */
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick>.quick-label-row{display:flex!important;align-items:center!important;justify-content:center!important;align-self:stretch!important;justify-self:stretch!important;position:static!important;box-sizing:border-box!important;min-width:0!important;width:auto!important;max-width:none!important;height:auto!important;min-height:0!important;max-height:none!important;margin:13px 9px 12px!important;padding:8px 4px!important;border:1px solid #aacbb7!important;border-radius:6px!important;background:#dceee2!important;color:#1e573c!important;text-align:center!important;grid-row:2!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-label-row>.quick-label{display:block!important;position:static!important;box-sizing:border-box!important;min-width:0!important;width:100%!important;max-width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#1e573c!important;-webkit-text-fill-color:#1e573c!important;font:800 12px/1.3 Arial,Helvetica,sans-serif!important;letter-spacing:.025em!important;text-transform:uppercase!important;hyphens:none!important;text-align:center!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-template-rows:repeat(5,auto)!important;align-items:stretch!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick{display:grid!important;grid-template-rows:subgrid!important;grid-row:1/span 5!important;min-width:0!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks.has-captions{grid-template-rows:repeat(6,auto)!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks.has-captions>.quick-pick{grid-row:1/span 6!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks.has-captions>.quick-pick>.quick-label-row{grid-row:3!important}
+@container bld-bold-card (max-width:220px){#bld-air-conditioning-types.bld-best-picks .bld-content .quick-label-row>.quick-label{font-size:10px!important;letter-spacing:0!important}}
+@container bld-bold-card (max-width:140px){#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick>.quick-label-row{margin:9px 4px 8px!important;padding:6px 3px!important}#bld-air-conditioning-types.bld-best-picks .bld-content .quick-label-row>.quick-label{font-size:9px!important}}
+
+
+/* v1.2: centre the text itself; never let a theme stretch the inner label. */
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick>.quick-label-row{flex-direction:column!important;align-items:center!important;justify-content:center!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-label-row>.quick-label{flex:none!important;align-self:center!important;justify-self:center!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;vertical-align:middle!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick>.quick-name{white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-name>.model-code{display:inline-block!important;white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;hyphens:none!important;line-height:inherit!important;font-size:inherit!important;font-weight:inherit!important;letter-spacing:normal!important;color:inherit!important;-webkit-text-fill-color:inherit!important}
+@container bld-bold-card (max-width:140px){#bld-air-conditioning-types.bld-best-picks .bld-content .quick-name>.model-code{font-size:11px!important}}
+
+
+
+#bld-air-conditioning-types{overflow-wrap:normal;min-width:0}
+#bld-air-conditioning-types .bld-content{container-type:inline-size;container-name:bld-article}
+#bld-air-conditioning-types h2,#bld-air-conditioning-types h3,#bld-air-conditioning-types p,#bld-air-conditioning-types li{min-width:0;max-width:100%}
+#bld-air-conditioning-types .quick-pick{align-content:normal}
+#bld-air-conditioning-types .quick-name,#bld-air-conditioning-types .quick-reason{align-self:stretch}
+#bld-air-conditioning-types .buy-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:8px!important;width:320px!important;max-width:100%!important;min-width:0!important;margin:1em auto!important}
+#bld-air-conditioning-types a.buy-button,#bld-air-conditioning-types .buy-status{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:320px!important;max-width:100%!important;min-width:0!important;height:64px!important;min-height:64px!important;max-height:64px!important;flex:none!important;padding:6px!important;margin:0!important;gap:3px!important;border:0!important;border-radius:8px;background:#1874a6!important;font:800 18px/1.15 Arial,Helvetica,sans-serif!important;text-align:center!important;text-decoration:none!important;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;transform:none!important;color:white!important;-webkit-text-fill-color:white!important}
+#bld-air-conditioning-types a.buy-button.retailer-secondary,#bld-air-conditioning-types .buy-status{background:#2d7a55!important}
+#bld-air-conditioning-types .buy-status{font-weight:500!important;cursor:default}
+#bld-air-conditioning-types a.buy-button:is(:visited,:hover,:focus,:active),#bld-air-conditioning-types a.buy-button *{color:white!important;-webkit-text-fill-color:white!important;opacity:1!important}
+#bld-air-conditioning-types a.buy-button .button-product{font:inherit!important;font-weight:800!important;margin:0!important}
+#bld-air-conditioning-types a.buy-button .button-store{font-size:.84em!important;font-weight:500!important;line-height:1.15!important;margin:0!important}
+#bld-air-conditioning-types a.buy-button:hover{filter:brightness(.94)}
+#bld-air-conditioning-types a.buy-button:focus-visible{outline:3px solid #b26a00;outline-offset:3px}
+#bld-air-conditioning-types a.buy-button::before,#bld-air-conditioning-types a.buy-button::after{content:none!important;display:none!important}
+#bld-air-conditioning-types .sources a,#bld-air-conditioning-types .sources a:is(:visited,:hover,:focus,:active){color:#075f9b!important;-webkit-text-fill-color:#075f9b!important;text-decoration:underline!important;overflow-wrap:anywhere}
+#bld-air-conditioning-types .final-retailers h3{text-align:center}
+@media(max-width:680px){#bld-air-conditioning-types a.buy-button,#bld-air-conditioning-types .buy-status{font-size:17px!important}}
+@container bld-article (max-width:620px){#bld-air-conditioning-types.bld-best-picks .product-layout{grid-template-columns:1fr}#bld-air-conditioning-types.bld-best-picks .product-head h3{font-size:20px;overflow-wrap:anywhere}#bld-air-conditioning-types.bld-best-picks .product-body{padding:10px}#bld-air-conditioning-types.bld-best-picks .winner{padding:12px}#bld-air-conditioning-types.bld-best-picks .mini-box{padding:10px}}
+
+/* Keep subgrid row sharing: inline-size containment on a subgrid card breaks track inheritance in Chromium. */
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick{container-type:normal!important}
+@container bld-article (max-width:692px){
+#bld-air-conditioning-types .quick-name{font-size:15px}
+#bld-air-conditioning-types .quick-reason{font-size:12px}
+#bld-air-conditioning-types a.quick-button{font-size:13px!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-label-row>.quick-label{font-size:10px!important;letter-spacing:0!important}
+}
+@container bld-article (max-width:434px){
+#bld-air-conditioning-types .quick-name{font-size:12px;margin-left:4px;margin-right:4px}
+#bld-air-conditioning-types .quick-reason{font-size:11px;margin-left:4px;margin-right:4px}
+#bld-air-conditioning-types .quick-actions{margin-left:4px;margin-right:4px}
+#bld-air-conditioning-types a.quick-button{font-size:11px!important}
+#bld-air-conditioning-types .quick-button .button-store{font-size:10px!important}
+#bld-air-conditioning-types .quick-image{padding:5px}
+#bld-air-conditioning-types .quick-status{font-size:11px}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-picks>.quick-pick>.quick-label-row{margin:9px 4px 8px!important;padding:6px 3px!important}
+#bld-air-conditioning-types.bld-best-picks .bld-content .quick-label-row>.quick-label{font-size:9px!important}
+}
+
+@container bld-article (max-width: 680px) {#bld-air-conditioning-types table, #bld-air-conditioning-types thead, #bld-air-conditioning-types tbody, #bld-air-conditioning-types tr, #bld-air-conditioning-types th, #bld-air-conditioning-types td { display: block; }
+#bld-air-conditioning-types table thead { position: absolute; clip: rect(0px, 0px, 0px, 0px); clip-path: inset(50%); width: 1px; height: 1px; overflow: hidden; white-space: nowrap; }
+#bld-air-conditioning-types table tr { margin: 0px 0px 0.85em; border: 1px solid rgb(215, 224, 230); }
+#bld-air-conditioning-types table td { border-width: 0px 0px 1px; border-style: none none solid; border-color: currentcolor currentcolor rgb(215, 224, 230); border-image: none; }
+#bld-air-conditioning-types table td:last-child { border-bottom: 0px; }
+#bld-air-conditioning-types table td::before { content: attr(data-label); display: block; margin-bottom: 0.12em; font-weight: 800; color: rgb(23, 50, 77) !important; -webkit-text-fill-color: rgb(23, 50, 77) !important; }
+#bld-air-conditioning-types .support-media.diagram { max-width: 100%; }
+}
+</style>
+<article id="bld-air-conditioning-types" class="bld-best-picks" data-featured-product="Mitsubishi Electric MSZAP50VGKD2KIT"><div class="bld-content">
+
+<span class="section-kicker">Australian home comfort guide</span><h2 class="top-heading">Which air-conditioning type suits your home?</h2>
+
+<div class="quick-picks">
+<div class="quick-pick featured">
+<div class="quick-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/mitsubishi-mszap50vgkd2kit-product.png?v=1790594324" alt="White Mitsubishi Electric MSZAP50VGKD2KIT wall-mounted indoor unit on white" width="1600" height="1600" loading="eager"></div>
+<div class="quick-label-row"><span class="quick-label">Main room</span></div>
+<span class="quick-name" aria-label="Mitsubishi Electric MSZAP50VGKD2KIT">Mitsubishi AP50</span><span class="quick-reason">Main-zone heating and cooling, after installer sizing.</span><div class="quick-actions">
+<a class="quick-button retailer-primary" href="https://www.ebay.com.au/itm/157409410726?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Mitsubishi Electric MSZAP50VGKD2KIT — eBay — Bing Lee"><span class="button-product">AP50</span><span class="button-store">eBay</span></a><div class="quick-status">No second retailer available</div>
+</div>
+</div>
+<div class="quick-pick">
+<div class="quick-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/fujitsu-set-astg09kmtc-nxt-product.png?v=1790594325" alt="Fujitsu SET-ASTG09KMTC-NXT indoor unit, outdoor condenser and remote on white" width="1600" height="1600" loading="eager"></div>
+<div class="quick-label-row"><span class="quick-label">Bedroom</span></div>
+<span class="quick-name" aria-label="Fujitsu SET-ASTG09KMTC-NXT">Fujitsu 2.5 kW</span><span class="quick-reason">Separate bedroom or study, after installer sizing.</span><div class="quick-actions">
+<a class="quick-button retailer-primary" href="https://www.ebay.com.au/itm/155850419374?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — eBay — Bing Lee"><span class="button-product">Fujitsu 2.5 kW</span><span class="button-store">eBay</span></a><a class="quick-button retailer-secondary" href="https://www.thegoodguys.com.au/fujitsu-c25kw-h32kw-reverse-cycle-split-system-set-astg09kmtc-nxt" target="_blank" rel="noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — The Good Guys"><span class="button-product">Fujitsu 2.5 kW</span><span class="button-store">The Good Guys</span></a>
+</div>
+</div>
+<div class="quick-pick">
+<div class="quick-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/olimpia-splendid-elite12-product.png?v=1790594325" alt="White Olimpia Splendid ELITE12 portable air conditioner on white" width="1600" height="1600" loading="eager"></div>
+<div class="quick-label-row"><span class="quick-label">Portable option</span></div>
+<span class="quick-name" aria-label="Olimpia Splendid ELITE12">Olimpia ELITE12</span><span class="quick-reason">Cooling fallback when fixed installation is unavailable.</span><div class="quick-actions">
+<a class="quick-button retailer-primary" href="https://www.thegoodguys.com.au/olimpia-splendid-35kw-portable-air-conditioner-elite12" target="_blank" rel="noopener noreferrer" aria-label="Olimpia Splendid ELITE12 — The Good Guys"><span class="button-product">ELITE12</span><span class="button-store">The Good Guys</span></a><div class="quick-status">No second retailer available</div>
+</div>
+</div>
+</div>
+
+<div class="price-status">
+<strong>Australian listing check: 24 October 2026.</strong> These examples serve different situations; a qualified installer must size a fixed system to each room. Product prices exclude installation and can change with stock, delivery and location. Compare a complete installed quote before ordering.</div>
+
+<div class="winner">
+<div class="winner-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/mitsubishi-mszap50vgkd2kit-product.png?v=1790594324" alt="White Mitsubishi Electric MSZAP50VGKD2KIT wall-mounted indoor unit on white" width="1600" height="1600" loading="lazy"></div>
+<p class="winner-caption">Mitsubishi Electric MSZAP50VGKD2KIT indoor unit shown</p>
+<div class="winner-copy">
+<span class="winner-kicker">Best system type for most homes</span><h3>Start with a correctly sized reverse-cycle split</h3>
+<p>This complete 5.0/6.0 kW kit illustrates the main-zone route, but its capacity is right only where an installer’s room-load calculation supports it. A separate smaller split can serve an occupied bedroom more effectively than oversizing the lounge unit.</p>
+</div>
+</div>
+
+<div class="intro-card fancy-card">
+<p>For most Australian homes and apartments, an efficient reverse-cycle split-system air conditioner is the best starting point. It cools in summer, heats in winter, lets you condition only the rooms being used and usually costs less to install than ducted air conditioning. The correct answer still depends on the floor plan, room size, insulation, windows, climate, outdoor-unit location and strata or rental restrictions.</p>
+
+<div class="callout pick">
+<strong>Quick answer:</strong> Choose one correctly sized reverse-cycle split system for the main living area if you want the best balance of purchase price, efficiency and control. Add a smaller separate split to a frequently used bedroom if needed. Consider a multi-split when outdoor-unit space is restricted, and ducted reverse cycle when you own a suitable house, want whole-home comfort and will use effective zoning. Treat a portable air conditioner as a temporary compromise rather than the default.</div>
+
+<div class="callout warning">
+<strong>Do not choose capacity from floor area alone.</strong> Ceiling height, glass, orientation, shading, insulation, air leakage, climate and adjoining spaces can materially change the load. Ask a competent installer to complete a room-by-room heat-load calculation before accepting a quote.</div>
+
+</div>
+
+<h2>Three practical product examples</h2>
+<p>These are use-case examples, not a universal ranking. The portable cooler is a fallback when a fixed system cannot be installed.</p>
+
+<div class="scroll"><table>
+<thead><tr>
+<th>Example</th>
+<th>When to consider it</th>
+<th>Critical check</th>
+</tr></thead>
+<tbody>
+<tr>
+<td data-label="Example">Mitsubishi Electric MSZAP50VGKD2KIT</td>
+<td data-label="When to consider it">A main living zone needing a 5.0 kW cooling / 6.0 kW heating class split</td>
+<td data-label="Critical check">Installer heat-load sizing and total installed quote</td>
+</tr>
+<tr>
+<td data-label="Example">Fujitsu SET-ASTG09KMTC-NXT</td>
+<td data-label="When to consider it">A separately controlled bedroom or study suited to 2.5 kW cooling / 3.2 kW heating</td>
+<td data-label="Critical check">Room load, quiet operation and outdoor placement</td>
+</tr>
+<tr>
+<td data-label="Example">Olimpia Splendid ELITE12</td>
+<td data-label="When to consider it">Temporary cooling when permanent installation is unavailable</td>
+<td data-label="Critical check">Window exhaust, noise and cooling-only limitation</td>
+</tr>
+</tbody>
+</table></div>
+
+<h2>How we chose</h2>
+<p>We matched each example to the decision in this guide and reviewed the Australian retailer listings on 24 October 2026. We checked capacities, system suitability, installation requirements and published government guidance. These are research-led examples; we have not conducted hands-on tests or a site-specific heat-load assessment.</p>
+
+<h2>Detailed product examples</h2>
+
+<section class="product featured"><div class="product-head">
+<span class="product-label">Main room</span><h3>Mitsubishi Electric MSZAP50VGKD2KIT</h3>
+</div>
+<div class="product-body">
+<div class="product-layout">
+<figure class="product-media"><div class="product-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/mitsubishi-mszap50vgkd2kit-product.png?v=1790594324" alt="White Mitsubishi Electric MSZAP50VGKD2KIT wall-mounted indoor unit on white" width="1600" height="1600" loading="lazy"></div>
+<figcaption class="product-caption">Mitsubishi Electric MSZAP50VGKD2KIT. Product image; confirm the complete model and installation scope on the retailer listing.</figcaption></figure><div class="product-copy">
+<p class="summary-line">A 5.0 kW cooling and 6.0 kW heating complete split-system example for an appropriately sized main zone. The photograph shows the indoor unit; the retailer listing is for the indoor/outdoor set. Installation is additional.</p>
+<div class="badges">
+<span class="badge">Main-zone example</span><span class="badge">Research-led example</span>
+</div>
+<div class="pros-cons">
+<div class="mini-box pros-box">
+<h4>Why consider it</h4>
+<ul>
+<li>Heats and cools one main occupied zone</li>
+<li>Inverter operation and zoned energy rating information for comparison</li>
+</ul>
+</div>
+<div class="mini-box cons-box">
+<h4>Check first</h4>
+<ul>
+<li>5.0 kW is not a universal living-room size; request a heat-load calculation</li>
+<li>Outdoor placement, drainage, electrical work and approvals affect total cost</li>
+</ul>
+</div>
+</div>
+<div class="best-for">
+<strong>Best for:</strong> A living area whose assessed load calls for this capacity.</div>
+</div>
+</div>
+<div class="buy-row">
+<a class="buy-button retailer-primary" href="https://www.ebay.com.au/itm/157409410726?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Mitsubishi Electric MSZAP50VGKD2KIT — eBay — Bing Lee"><span class="button-product">AP50</span><span class="button-store">eBay</span></a><div class="buy-status">No second retailer available</div>
+</div>
+</div></section>
+
+<section class="product"><div class="product-head">
+<span class="product-label">Bedroom</span><h3>Fujitsu SET-ASTG09KMTC-NXT</h3>
+</div>
+<div class="product-body">
+<div class="product-layout">
+<figure class="product-media"><div class="product-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/fujitsu-set-astg09kmtc-nxt-product.png?v=1790594325" alt="Fujitsu SET-ASTG09KMTC-NXT indoor unit, outdoor condenser and remote on white" width="1600" height="1600" loading="lazy"></div>
+<figcaption class="product-caption">Fujitsu SET-ASTG09KMTC-NXT. Product image; confirm the complete model and installation scope on the retailer listing.</figcaption></figure><div class="product-copy">
+<p class="summary-line">A complete 2.5 kW cooling and 3.2 kW heating set that illustrates direct bedroom or study conditioning. The listing includes indoor and outdoor units; installation is additional.</p>
+<div class="badges">
+<span class="badge">Separate-room example</span><span class="badge">Research-led example</span>
+</div>
+<div class="pros-cons">
+<div class="mini-box pros-box">
+<h4>Why consider it</h4>
+<ul>
+<li>Independent room control without running the main living-area unit</li>
+<li>Reverse-cycle heating and cooling</li>
+</ul>
+</div>
+<div class="mini-box cons-box">
+<h4>Check first</h4>
+<ul>
+<li>Capacity depends on glass, insulation, climate and connected spaces</li>
+<li>Additional outdoor equipment and installation may need approval</li>
+</ul>
+</div>
+</div>
+<div class="best-for">
+<strong>Best for:</strong> A bedroom or study with a confirmed load suited to this model.</div>
+</div>
+</div>
+<div class="buy-row">
+<a class="buy-button retailer-primary" href="https://www.ebay.com.au/itm/155850419374?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — eBay — Bing Lee"><span class="button-product">Fujitsu 2.5 kW</span><span class="button-store">eBay</span></a><a class="buy-button retailer-secondary" href="https://www.thegoodguys.com.au/fujitsu-c25kw-h32kw-reverse-cycle-split-system-set-astg09kmtc-nxt" target="_blank" rel="noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — The Good Guys"><span class="button-product">Fujitsu 2.5 kW</span><span class="button-store">The Good Guys</span></a>
+</div>
+</div></section>
+
+<section class="product"><div class="product-head">
+<span class="product-label">Portable fallback</span><h3>Olimpia Splendid ELITE12</h3>
+</div>
+<div class="product-body">
+<div class="product-layout">
+<figure class="product-media"><div class="product-image"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/olimpia-splendid-elite12-product.png?v=1790594325" alt="White Olimpia Splendid ELITE12 portable air conditioner on white" width="1600" height="1600" loading="lazy"></div>
+<figcaption class="product-caption">Olimpia Splendid ELITE12. Product image; confirm the complete model and installation scope on the retailer listing.</figcaption></figure><div class="product-copy">
+<p class="summary-line">A 3.5 kW cooling-only portable example with a window exhaust kit. It is a constrained alternative, not an equal replacement for an installed split system.</p>
+<div class="badges">
+<span class="badge">Conditional fallback</span><span class="badge">Research-led example</span>
+</div>
+<div class="pros-cons">
+<div class="mini-box pros-box">
+<h4>Why consider it</h4>
+<ul>
+<li>No permanent split-system installation</li>
+<li>Can be moved where a compatible window-exhaust setup is possible</li>
+</ul>
+</div>
+<div class="mini-box cons-box">
+<h4>Check first</h4>
+<ul>
+<li>Noticeable indoor operating noise and window sealing are unavoidable considerations</li>
+<li>Cooling only; expect lower practical efficiency than a suitable split system</li>
+</ul>
+</div>
+</div>
+<div class="best-for">
+<strong>Best for:</strong> A renter or temporary situation where fixed installation cannot proceed.</div>
+</div>
+</div>
+<div class="buy-row">
+<a class="buy-button retailer-primary" href="https://www.thegoodguys.com.au/olimpia-splendid-35kw-portable-air-conditioner-elite12" target="_blank" rel="noopener noreferrer" aria-label="Olimpia Splendid ELITE12 — The Good Guys"><span class="button-product">ELITE12</span><span class="button-store">The Good Guys</span></a><div class="buy-status">No second retailer available</div>
+</div>
+</div></section>
+
+<h2>Home air-conditioning types at a glance</h2>
+
+<div class="scroll">
+<table>
+<thead><tr>
+<th>System</th>
+<th>Best suited to</th>
+<th>Main advantage</th>
+<th>Main drawback</th>
+</tr></thead>
+<tbody>
+<tr>
+<td data-label="System">Single split system</td>
+<td data-label="Best suited to">One living area, bedroom, apartment or targeted heating and cooling</td>
+<td data-label="Main advantage">Efficient, affordable and independently controlled</td>
+<td data-label="Main drawback">One indoor unit normally serves one main zone</td>
+</tr>
+<tr>
+<td data-label="System">Multi-split system</td>
+<td data-label="Best suited to">Several rooms where outdoor-unit space is limited</td>
+<td data-label="Main advantage">Multiple indoor units connected to one outdoor unit</td>
+<td data-label="Main drawback">More complex and often dearer than separate splits</td>
+</tr>
+<tr>
+<td data-label="System">Ducted reverse cycle</td>
+<td data-label="Best suited to">Larger houses needing discreet whole-home conditioning</td>
+<td data-label="Main advantage">Even appearance, multiple outlets and optional zoning</td>
+<td data-label="Main drawback">High purchase cost and potentially high running cost</td>
+</tr>
+<tr>
+<td data-label="System">Portable refrigerated unit</td>
+<td data-label="Best suited to">Renters or temporary use where permanent installation is impossible</td>
+<td data-label="Main advantage">No fixed outdoor unit and can be moved</td>
+<td data-label="Main drawback">Noisy, less efficient and must exhaust hot air outside</td>
+</tr>
+<tr>
+<td data-label="System">Window or wall unit</td>
+<td data-label="Best suited to">Small rooms where an appropriate opening and approval exist</td>
+<td data-label="Main advantage">Simple self-contained system</td>
+<td data-label="Main drawback">Noise, appearance, sealing and installation restrictions</td>
+</tr>
+<tr>
+<td data-label="System">Evaporative cooling</td>
+<td data-label="Best suited to">Dry inland climates with suitable ventilation</td>
+<td data-label="Main advantage">Can use less electricity in favourable dry conditions</td>
+<td data-label="Main drawback">Performance falls in humidity and it consumes water</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<figure class="support-media diagram"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/aircon-system-routes.png?v=1790594324" alt="Four system choices: single split, multi-split, ducted and portable fallback" width="1200" height="1140" loading="lazy"><figcaption>Match the system to the occupied rooms and installation limits. Ask an installer to size each zone.</figcaption></figure>
+
+<h2>Best choice for most apartments</h2>
+
+<p>A reverse-cycle split system is usually the strongest apartment choice when approval and outdoor-unit placement are available. A unit in the living area can cool the room people use most without paying to condition the whole apartment. A separate bedroom system provides better overnight control than trying to push living-room air down a hallway.</p>
+
+<p>Do not expect one large split in the lounge to cool closed bedrooms evenly. Air does not turn corners or pass through doorways reliably, and the thermostat may reach its target while distant rooms remain uncomfortable.</p>
+
+<p>Before buying, confirm:</p>
+
+<ul>
+<li>written landlord approval if you rent;</li>
+<li>the strata scheme’s renovation process and by-laws;</li>
+<li>whether walls, balconies, ceilings or service ducts are common property;</li>
+<li>where condensate water can legally drain;</li>
+<li>the outdoor unit’s permitted position and mounting method;</li>
+<li>noise effects on neighbouring bedrooms and balconies;</li>
+<li>electrical capacity and access to an appropriate circuit; and</li>
+<li>how pipes and cables will cross fire-rated or waterproofed building elements.</li>
+</ul>
+
+<p>In NSW, installing or replacing a reverse-cycle air conditioner can fall within strata minor-renovation rules, but work affecting the exterior, structure or other common property may require a different approval pathway. The individual scheme’s by-laws and proposal details matter, so obtain approval before paying a deposit.</p>
+
+
+<div class="callout warning">
+<strong>Apartment trap:</strong> The outdoor condenser being physically able to fit on the balcony does not mean it is approved. Clearance, airflow, vibration, noise, drainage, appearance and common-property rules must all be resolved.</div>
+
+
+
+<h2>Best choice for a small house or townhouse</h2>
+
+<p>One split system in the main living zone plus separate systems in regularly occupied bedrooms is often more economical and controllable than a small ducted system. You can run only the area being used and avoid duct losses through a hot roof space.</p>
+
+<p>This arrangement suits households whose occupants keep different schedules. Someone working from home can condition one room during the day without cooling every bedroom. At night, the living-area system can remain off while a quiet bedroom unit operates at a modest setting.</p>
+
+<p>The trade-off is having several indoor and outdoor units. A multi-split may reduce the number of condensers, but it is not automatically cheaper or more efficient. Compare installed cost, rated efficiency when several heads operate, pipe lengths, service access and what happens to all rooms if the shared outdoor unit fails.</p>
+
+
+
+<h2>Best choice for a larger house</h2>
+
+<p>Ducted reverse-cycle air conditioning can suit a large home when appearance, convenience and even distribution matter. It works best with thoughtful zoning, adequate return-air paths, sealed and insulated ducts, and controls that prevent the system from trying to condition too little an area for its operating range.</p>
+
+<p>Ask the designer to explain:</p>
+
+<ul>
+<li>the heat-load calculation for each room;</li>
+<li>the supply-air quantity and outlet position;</li>
+<li>where return air will travel when bedroom doors are closed;</li>
+<li>how small each active zone is allowed to become;</li>
+<li>duct insulation, sealing and routing;</li>
+<li>indoor and outdoor unit service access;</li>
+<li>condensate drainage and overflow protection; and</li>
+<li>expected electrical demand when several zones operate.</li>
+</ul>
+
+<p>A badly designed ducted system can be noisy, inefficient and uneven. More zones do not repair undersized ducts, poor air balance or an incorrectly selected central unit.</p>
+
+
+
+<h2>How much cooling capacity do you need?</h2>
+
+<p>Air-conditioner capacity is normally expressed in kilowatts of heating or cooling output. It is not the same as electrical power consumption. A 5kW cooling system does not continuously draw 5kW of electricity.</p>
+
+<p>The following ranges are useful only for an initial shortlist:</p>
+
+<div class="scroll">
+<table>
+<thead><tr>
+<th>Room floor area</th>
+<th>Indicative cooling capacity</th>
+<th>Typical example</th>
+<th>Important qualification</th>
+</tr></thead>
+<tbody>
+<tr>
+<td data-label="Room floor area">Up to about 20m²</td>
+<td data-label="Indicative cooling capacity">Approximately 2–2.5kW</td>
+<td data-label="Typical example">Small bedroom or study</td>
+<td data-label="Important qualification">Large western glass or poor insulation may require more</td>
+</tr>
+<tr>
+<td data-label="Room floor area">About 20–40m²</td>
+<td data-label="Indicative cooling capacity">Approximately 2.5–5kW</td>
+<td data-label="Typical example">Large bedroom or modest living room</td>
+<td data-label="Important qualification">Open doorways and high ceilings increase the effective area</td>
+</tr>
+<tr>
+<td data-label="Room floor area">About 40–60m²</td>
+<td data-label="Indicative cooling capacity">Approximately 5–8kW</td>
+<td data-label="Typical example">Open-plan lounge, dining and kitchen</td>
+<td data-label="Important qualification">Cooking heat and sun exposure can be significant</td>
+</tr>
+<tr>
+<td data-label="Room floor area">More than 60m²</td>
+<td data-label="Indicative cooling capacity">Professional calculation essential</td>
+<td data-label="Typical example">Large open-plan zone</td>
+<td data-label="Important qualification">Layout and air distribution become as important as capacity</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>An installer should measure and account for climate zone, ceiling height, wall and ceiling insulation, roof construction, window size and orientation, shading, number of occupants, air leakage and heat-producing appliances.</p>
+
+
+
+<figure class="support-media diagram"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/aircon-heat-load-factors.png?v=1790594324" alt="Four factors in air-conditioner sizing: sun and glass, building, climate and room use" width="1200" height="1140" loading="lazy"><figcaption>Capacity needs a room heat-load assessment; floor area alone is insufficient.</figcaption></figure>
+
+<h2>Why bigger is not always better</h2>
+
+<p>An oversized unit may cool the air quickly and stop before removing enough moisture, particularly in humid areas. It may cycle frequently, create temperature swings and cost more to buy. An undersized unit may run continuously during extreme weather, struggle to reach the set temperature and provide poor comfort.</p>
+
+<p>Modern inverter systems vary compressor output, which improves part-load operation, but sizing still matters. Ask for the unit’s minimum and maximum output—not only its headline capacity—especially for a bedroom or highly insulated room with a small overnight load.</p>
+
+
+
+<h2>Reverse cycle is usually the sensible default</h2>
+
+<p>A reverse-cycle air conditioner is an air-source heat pump. It moves heat rather than creating all warmth through electrical resistance. The Australian Government’s Your Home guidance describes reverse-cycle air conditioners as highly efficient for both heating and cooling.</p>
+
+<p>Cooling-only models may cost less initially, but they remove the option of efficient winter heating. Unless the room will never need heat, compare the small upfront saving with the value of year-round use.</p>
+
+
+
+<h2>When evaporative cooling makes sense</h2>
+
+<p>Evaporative cooling works best in dry inland climates. It introduces cooled outside air and normally requires windows or doors to remain partly open so warm air can escape. It is less effective as humidity rises.</p>
+
+<p>Your Home notes that evaporative systems consume water, can suffer mineral build-up in hard-water areas and may bring outside smoke into the home during bushfires. High-efficiency reverse-cycle air conditioning is generally more effective and efficient across a wider range of conditions.</p>
+
+<p>Do not choose evaporative cooling solely because its electrical use appears low. Consider local humidity, water availability, maintenance, smoke, security with open windows and winter heat leakage through roof ducting.</p>
+
+
+
+<h2>When a portable air conditioner is acceptable</h2>
+
+<p>A portable refrigerated air conditioner may be reasonable for a renter who cannot install anything permanent or for occasional emergency cooling. It must exhaust hot air outside through a properly sealed window kit.</p>
+
+<p>Single-hose units pull room air across the condenser and expel it outdoors, which can draw hot outside air back through gaps elsewhere. They are also noisy because the compressor sits inside the room. A portable evaporative cooler without an exhaust hose is not a refrigerated air conditioner and will not cool a closed room in the same way.</p>
+
+
+<div class="callout">
+<strong>Portable-unit reality:</strong> If permanent installation is possible, a correctly sized split system will normally be quieter, more efficient and more effective. Buy portable only when the installation constraint is genuine.</div>
+
+
+
+<h2>How to compare energy efficiency</h2>
+
+<p>Use the Zoned Energy Rating Label rather than comparing star counts without context. The label can show different performance for hot, average and cold climate zones, because a system’s suitability changes with outdoor conditions.</p>
+
+<p>Compare models with similar rated capacity and examine:</p>
+
+<ul>
+<li>the star rating for your climate zone;</li>
+<li>annual energy-consumption estimates on the label;</li>
+<li>cooling and heating efficiency;</li>
+<li>minimum operating output;</li>
+<li>standby consumption;</li>
+<li>indoor and outdoor sound-power figures; and</li>
+<li>performance at high and low outdoor temperatures.</li>
+</ul>
+
+<p>A high-efficiency unit cannot compensate for an unshaded western window, open door or uninsulated ceiling. Improving the building can reduce the capacity required and lower bills for the life of the system.</p>
+
+
+
+<h2>Noise matters more in an apartment</h2>
+
+<p>Indoor noise affects sleep and television listening. Outdoor noise and vibration can affect neighbours and trigger complaints. Do not compare only the quietest indoor fan setting; review the outdoor-unit sound data and likely operation during hot nights.</p>
+
+<p>The condenser needs adequate airflow and should not discharge hot air into a confined balcony corner. Avoid mounting it next to a neighbour’s bedroom where practical. Correct brackets, vibration isolation and a rigid mounting surface help, but must suit the building and manufacturer’s instructions.</p>
+
+
+
+<h2>Installation quality can matter more than brand</h2>
+
+<p>A good unit can perform poorly after bad installation. Refrigerant pipe length, pipe insulation, condensate fall, electrical supply, wall penetration sealing, outdoor clearances, commissioning and drainage all matter.</p>
+
+<p>Obtain an itemised quote stating:</p>
+
+<ul>
+<li>exact indoor and outdoor model numbers;</li>
+<li>cooling and heating capacity;</li>
+<li>pipe and cable allowance;</li>
+<li>mounting brackets or slab;</li>
+<li>condensate route and pump if required;</li>
+<li>switchboard or circuit work;</li>
+<li>removal and lawful disposal of an old system;</li>
+<li>warranty responsibilities; and</li>
+<li>all exclusions and possible variations.</li>
+</ul>
+
+<p>Refrigerant work must be handled by appropriately licensed people. Check the relevant state electrical or contractor licence and the ARCtick refrigerant authorisation that applies to the work.</p>
+
+
+
+<h2>Features worth paying for</h2>
+
+<ul>
+<li>
+<strong>Good part-load efficiency:</strong> The system spends much of its life below maximum output.</li>
+<li>
+<strong>Low indoor noise:</strong> Particularly important for bedrooms and apartments.</li>
+<li>
+<strong>Wide airflow control:</strong> Helps prevent cold air blowing directly onto seating or beds.</li>
+<li>
+<strong>Useful timer and scheduling:</strong> Reduces unnecessary operation.</li>
+<li>
+<strong>Demand-response capability:</strong> May suit some electricity plans or incentive programs.</li>
+<li>
+<strong>Accessible washable filters:</strong> Maintenance is more likely to be completed.</li>
+<li>
+<strong>Strong local service support:</strong> Parts and competent technicians matter after the warranty claim begins.</li>
+</ul>
+
+<p>Wi-Fi control can be convenient, but it should not outweigh efficiency, quietness, support and correct sizing. Check whether essential controls still work without an account, cloud connection or phone app.</p>
+
+
+
+<h2>Reduce the load before buying a larger unit</h2>
+
+<ol>
+<li>Shade west- and north-facing glass appropriately.</li>
+<li>Use curtains or blinds with minimal gaps.</li>
+<li>Seal obvious air leakage around doors and windows.</li>
+<li>Improve ceiling insulation where practical.</li>
+<li>Use ceiling fans to increase comfort at a higher thermostat setting.</li>
+<li>Close off unused areas when the system design permits it.</li>
+<li>Reduce oven and appliance heat during the hottest period.</li>
+</ol>
+
+<p>A fan does not lower room temperature, but moving air can make occupants feel cooler while using far less electricity than compressor cooling.</p>
+
+
+
+<h2>Mistakes to avoid</h2>
+
+<ul>
+<li>
+<strong>Buying by floor area alone:</strong> Insulation, glass and orientation can change the required capacity substantially.</li>
+<li>
+<strong>Automatically choosing the largest unit:</strong> Oversizing can reduce comfort and efficiency.</li>
+<li>
+<strong>Expecting one split to cool closed bedrooms:</strong> Condition occupied rooms directly.</li>
+<li>
+<strong>Installing before strata approval:</strong> You may be required to remove or relocate the system.</li>
+<li>
+<strong>Ignoring outdoor noise:</strong> The neighbour hears the condenser, not your quiet indoor fan.</li>
+<li>
+<strong>Choosing ducted without zoning:</strong> Whole-home operation can waste energy when only one room is occupied.</li>
+<li>
+<strong>Comparing star ratings from different capacities:</strong> Use the full Zoned Energy Rating Label and compare like with like.</li>
+<li>
+<strong>Buying the cheapest installation:</strong> Missing electrical, drainage or pipe work can create expensive variations.</li>
+<li>
+<strong>Blocking airflow:</strong> Furniture, curtains and confined condenser locations reduce performance.</li>
+<li>
+<strong>Neglecting filters:</strong> Restricted airflow hurts comfort and efficiency.</li>
+</ul>
+
+
+
+<p>In NSW, ask a participating installer to confirm eligibility and include any Energy Savings Scheme discount in the quote. Complete the required nomination paperwork <strong>before installation begins</strong>; the scheme does not reimburse work already completed. Not every model qualifies.</p>
+<h2>A practical buying process</h2>
+
+<ol>
+<li><strong>Choose the rooms that genuinely need conditioning.</strong></li>
+<li><strong>Measure each room, ceiling height, windows and connected spaces.</strong></li>
+<li><strong>Improve obvious shading, sealing and insulation weaknesses.</strong></li>
+<li><strong>Resolve landlord, strata and planning requirements.</strong></li>
+<li><strong>Obtain at least two itemised installation proposals.</strong></li>
+<li><strong>Ask each installer to explain the heat-load calculation.</strong></li>
+<li><strong>Compare climate-zone efficiency, noise and local support.</strong></li>
+<li><strong>Confirm outdoor placement, drainage and electrical work.</strong></li>
+<li><strong>Check available state incentives before accepting the quote.</strong></li>
+<li><strong>Keep invoices, approvals, model numbers and commissioning records.</strong></li>
+</ol>
+
+
+
+<figure class="support-media diagram"><img src="https://cdn.shopify.com/s/files/1/0597/8413/4741/files/aircon-installation-quote.png?v=1790594324" alt="Installed-quote checklist covering indoor and outdoor models, site work, approvals and commissioning" width="1200" height="1140" loading="lazy"><figcaption>Compare the complete installed scope and final cost in writing.</figcaption></figure>
+
+<h2>Frequently asked questions</h2>
+
+
+<h3>What type of air conditioner is best for an apartment?</h3>
+
+<p>A correctly sized reverse-cycle split system is usually best when strata, landlord and outdoor-unit placement requirements can be satisfied. It is efficient, quiet indoors and independently controlled.</p>
+
+
+<h3>Is ducted air conditioning worth it?</h3>
+
+<p>It can be in a larger owner-occupied house where discreet whole-home comfort matters. Good zoning, duct design and return-air paths are essential. Multiple split systems may cost less to run when only a few rooms are occupied.</p>
+
+
+<h3>Can one split system cool an entire apartment?</h3>
+
+<p>It may cool a compact open-plan apartment with good airflow, but closed bedrooms and rooms around corners will often remain warmer. Do not oversize the lounge unit to compensate for poor air distribution.</p>
+
+
+<h3>What temperature should I set?</h3>
+
+<p>Use the highest cooling setting that remains comfortable and the lowest comfortable heating setting. Small thermostat changes can materially affect energy use. Fans, shading and suitable clothing can widen the comfortable range.</p>
+
+
+<h3>Should I leave the air conditioner running all day?</h3>
+
+<p>Usually not when the home is empty for a long period. Efficient pre-cooling, sensible scheduling and reducing heat entry can help. Exceptions may apply for health, pets, humidity control or unusually extreme conditions.</p>
+
+
+<h3>Do I need a 2.5kW or 3.5kW unit for a bedroom?</h3>
+
+<p>Many ordinary bedrooms fall near those sizes, but glass, orientation, ceiling height, insulation and climate determine the answer. A proper calculation is safer than using room area alone.</p>
+
+
+
+<div class="verdict">
+<h2>Final verdict</h2>
+<strong>Verdict:</strong> For most Australian apartments, townhouses and ordinary homes, buy a correctly sized reverse-cycle split system for each important occupied zone. Use a multi-split only when limited outdoor space justifies its extra complexity. Choose ducted reverse cycle for a larger suitable house when whole-home comfort and appearance are worth the higher cost—and insist on proper zoning and design. Use portable air conditioning only when permanent installation is genuinely unavailable.</div>
+
+<section class="final-retailers" aria-label="Product purchase options"><h2>Compare current retailer offers</h2>
+<h3>Mitsubishi Electric MSZAP50VGKD2KIT</h3>
+<div class="buy-row">
+<a class="buy-button retailer-primary" href="https://www.ebay.com.au/itm/157409410726?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Mitsubishi Electric MSZAP50VGKD2KIT — eBay — Bing Lee"><span class="button-product">AP50</span><span class="button-store">eBay</span></a><div class="buy-status">No second retailer available</div>
+</div>
+<h3>Fujitsu SET-ASTG09KMTC-NXT</h3>
+<div class="buy-row">
+<a class="buy-button retailer-primary" href="https://www.ebay.com.au/itm/155850419374?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — eBay — Bing Lee"><span class="button-product">Fujitsu 2.5 kW</span><span class="button-store">eBay</span></a><a class="buy-button retailer-secondary" href="https://www.thegoodguys.com.au/fujitsu-c25kw-h32kw-reverse-cycle-split-system-set-astg09kmtc-nxt" target="_blank" rel="noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — The Good Guys"><span class="button-product">Fujitsu 2.5 kW</span><span class="button-store">The Good Guys</span></a>
+</div>
+<h3>Olimpia Splendid ELITE12</h3>
+<div class="buy-row">
+<a class="buy-button retailer-primary" href="https://www.thegoodguys.com.au/olimpia-splendid-35kw-portable-air-conditioner-elite12" target="_blank" rel="noopener noreferrer" aria-label="Olimpia Splendid ELITE12 — The Good Guys"><span class="button-product">ELITE12</span><span class="button-store">The Good Guys</span></a><div class="buy-status">No second retailer available</div>
+</div></section><div class="sources">
+<h2>Sources and further reading</h2>
+
+<ul>
+<li><a href="https://www.yourhome.gov.au/energy/heating-and-cooling" target="_blank" rel="noopener noreferrer">Australian Government Your Home: Heating and cooling</a></li>
+<li><a href="https://www.yourhome.gov.au/passive-design/passive-cooling" target="_blank" rel="noopener noreferrer">Australian Government Your Home: Passive cooling</a></li>
+<li><a href="https://www.energyrating.gov.au/consumer-information/products/air-conditioners" target="_blank" rel="noopener noreferrer">Energy Rating: Air conditioners</a></li>
+<li><a href="https://www.energyrating.gov.au/consumer-information/understand-energy-rating-label" target="_blank" rel="noopener noreferrer">Energy Rating: Understanding energy-rating labels</a></li>
+<li><a href="https://www.planning.nsw.gov.au/the-planning-system/development-assessment/planning-approval-pathways/exempt-development/air-conditioning-units" target="_blank" rel="noopener noreferrer">NSW Planning Portal: Air-conditioning units</a></li>
+<li><a href="https://www.nsw.gov.au/housing-and-construction/strata/living/renovations" target="_blank" rel="noopener noreferrer">NSW Government: Strata renovation rules</a></li>
+<li><a href="https://www.energy.nsw.gov.au/households/grants-rebates/household-energy-saving-upgrades/air-conditioner-upgrade-incentive" target="_blank" rel="noopener noreferrer">NSW Government: Air-conditioner upgrade incentive</a></li>
+<li><a href="https://www.lookforthetick.com.au/" target="_blank" rel="noopener noreferrer">Australian Refrigeration Council: Find an authorised air-conditioning professional</a></li>
+<li><a class="" href="https://www.ebay.com.au/itm/157409410726?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Mitsubishi Electric MSZAP50VGKD2KIT — eBay — Bing Lee">Mitsubishi Electric MSZAP50VGKD2KIT — eBay (Bing Lee)</a></li>
+<li><a class="" href="https://www.ebay.com.au/itm/155850419374?mkcid=1&amp;mkrid=705-53470-19255-0&amp;siteid=15&amp;campid=5339204720&amp;toolid=20012&amp;mkevt=1" target="_blank" rel="sponsored noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — eBay — Bing Lee">Fujitsu SET-ASTG09KMTC-NXT — eBay (Bing Lee)</a></li>
+<li><a class="" href="https://www.thegoodguys.com.au/fujitsu-c25kw-h32kw-reverse-cycle-split-system-set-astg09kmtc-nxt" target="_blank" rel="noopener noreferrer" aria-label="Fujitsu SET-ASTG09KMTC-NXT — The Good Guys">Fujitsu SET-ASTG09KMTC-NXT — The Good Guys</a></li>
+<li><a class="" href="https://www.thegoodguys.com.au/olimpia-splendid-35kw-portable-air-conditioner-elite12" target="_blank" rel="noopener noreferrer" aria-label="Olimpia Splendid ELITE12 — The Good Guys">Olimpia Splendid ELITE12 — The Good Guys</a></li>
+</ul>
+  <p><strong>Australian product listings and guidance checked: 24 October 2026.</strong> The Mitsubishi Electric and Fujitsu eBay listings are sold by Bing Lee; the Fujitsu and Olimpia Splendid alternatives link to The Good Guys. Stock, delivery coverage, prices and installation charges can change. Confirm the exact complete system and installation scope before ordering. Product imagery: Bing Lee, Air Conditioner Land and The Good Guys respectively. Supporting diagrams are BLD editorial graphics.</p>
+</div>
+
+</div></article>
