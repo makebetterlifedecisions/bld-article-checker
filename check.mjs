@@ -1,7 +1,8 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 
-const url=process.env.ARTICLE_URL || 'https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-build-a-desktop-pc';
+const request=(await fs.readFile('article-url.txt','utf8').catch(()=>'' )).split('\n')[0].trim();
+const url=process.env.ARTICLE_URL || request || 'https://www.betterlifedecisions.com.au/blogs/buying-guides/apple-tv-4k-vs-google-tv-streamer';
 const parsed=new URL(url);
 if(parsed.protocol!=='https:' || !['www.betterlifedecisions.com.au','betterlifedecisions.com.au'].includes(parsed.hostname) || !parsed.pathname.startsWith('/blogs/')) throw Error('Only public BLD article URLs are allowed');
 await fs.mkdir('results',{recursive:true});
@@ -34,7 +35,7 @@ try {
    record.geometry=await article.evaluate(root=>{
     const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom};};
     const groups=selector=>[...root.querySelectorAll(selector)].map(e=>({text:e.textContent.trim(),...rect(e)}));
-    const controls=[...root.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e=>({text:e.innerText,...rect(e),color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target}));
+    const controls=[...root.querySelectorAll('a.quick-button,a.buy-button')].map(e=>({text:e.innerText,...rect(e),color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target}));
     return {innerWidth,article:rect(root),pageWidth:document.documentElement.scrollWidth,labels:groups('.quick-label-row'),primary:groups('.quick-actions .retailer-primary'),secondary:groups('.quick-actions .retailer-secondary,.quick-actions .quick-status'),controls,
      images:[...root.querySelectorAll('img')].map(e=>({src:e.currentSrc||e.src,loaded:e.complete&&e.naturalWidth>0,naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight,alt:e.alt,visible:e.getClientRects().length>0})),
      overflow:[...root.querySelectorAll('*')].filter(e=>e.clientWidth>0&&e.scrollWidth>e.clientWidth+2&&!e.matches('.table-scroll,.scroll')).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
@@ -66,7 +67,7 @@ try {
     const b=buttons.nth(i);await b.scrollIntoViewIfNeeded();
     const states={label:await b.innerText()};
     await b.hover();states.hover=await b.evaluate(e=>({color:getComputedStyle(e).color,height:e.getBoundingClientRect().height}));
-    await b.focus();states.focus=await b.evaluate(e=>({focused:document.activeElement===e,color:getComputedStyle(e).color,outline:getComputedStyle(e).outlineStyle}));
+    await b.focus();await page.keyboard.press('Shift+Tab');await page.keyboard.press('Tab');states.focus=await b.evaluate(e=>({focused:document.activeElement===e,color:getComputedStyle(e).color,outline:getComputedStyle(e).outlineStyle}));
     const box=await b.boundingBox();
     if(box){await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();states.active=await b.evaluate(e=>({active:e.matches(':active'),color:getComputedStyle(e).color}));await page.mouse.move(1,1);await page.mouse.up();}
     for(const state of ['hover','focus','active'])check(states[state]?.color==='rgb(255, 255, 255)',`${state}: button text is not white`);
