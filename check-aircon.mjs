@@ -29,7 +29,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  for(const t of range.getClientRects())if(t.left<b.left-1||t.right>b.right+1||t.top<b.top-1||t.bottom>b.bottom+1){textOverflow.push(e.innerText);break;}
  }
  return{viewport:innerWidth,pageWidth:document.documentElement.scrollWidth,article:rect(root),
- cards:group('.quick-pick'),labels:group('.quick-label-row'),primary:group('.quick-actions>.retailer-primary'),secondary:group('.quick-actions>.retailer-secondary,.quick-actions>.quick-status'),
+ winnerCopy:group('.winner-copy'),cards:group('.quick-pick'),labels:group('.quick-label-row'),primary:group('.quick-actions>.retailer-primary'),secondary:group('.quick-actions>.retailer-secondary,.quick-actions>.quick-status'),
  controls:[...root.querySelectorAll('.quick-button,.buy-button,.quick-status,.buy-status')].map(e=>({...rect(e),text:e.innerText,color:getComputedStyle(e).color})),
  images:[...document.querySelectorAll('img')].filter(e=>root.contains(e)||e.currentSrc.includes('mitsubishi-ap50-home-comfort-featured')).map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,w:e.naturalWidth,h:e.naturalHeight,alt:e.alt})),
  textOverflow,headings:[...root.querySelectorAll('h2,h3')].map(e=>e.innerText),
@@ -38,7 +38,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  });
  const g=record.geometry,check=(ok,s)=>{if(!ok)record.errors.push(s);};
  check(g.viewport===test.width,'Viewport mismatch');check(g.pageWidth<=g.viewport+1,'Horizontal page overflow');
- check(g.cards.length===3,'Missing top cards');
+ check(g.cards.length===3,'Missing top cards');check(g.winnerCopy.length===1&&g.winnerCopy[0].w>=g.article.w*.7,'Winner copy squeezed into narrow column');
  check(g.cards.length===3&&Math.max(...g.cards.map(e=>e.y))-Math.min(...g.cards.map(e=>e.y))<=1,'Cards not side by side');
  for(const key of ['labels','primary','secondary']){const a=g[key];check(a.length===3,key+' peer count');for(const f of ['w','h','y','bottom'])if(a.length)check(Math.max(...a.map(e=>e[f]))-Math.min(...a.map(e=>e[f]))<=1,key+' unequal '+f);}
  check(g.controls.length===18,'Expected 18 controls including unavailable statuses');
