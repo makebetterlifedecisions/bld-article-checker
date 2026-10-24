@@ -37,7 +37,14 @@ jobs:
                   left=max(0,int(g['x'])-8)
                   im=im.crop((left,0,min(im.width,left+int(g['w'])+16),im.height))
               tileh=900
-              tiles=[im.crop((0,y,im.width,min(y+tileh,im.height))) for y in range(0,im.height,tileh)]
+              tiles=[im.crop((0,y,im.width,min(y+tileh,im.height))) for y in [0,900]]
+              for path in rec['screenshots']:
+                  frame=Image.open(io.BytesIO(z.read(path.replace('results/','',1)))).convert('RGB')
+                  if rec['width']>=1000:
+                      g=rec['geometry']['article']
+                      left=max(0,int(g['x'])-8)
+                      frame=frame.crop((left,0,min(frame.width,left+int(g['w'])+16),frame.height))
+                  tiles.append(frame)
               for offset in range(0,len(tiles),12):
                   group=tiles[offset:offset+12]
                   sheet=Image.new('RGB',(im.width*3,(tileh+25)*math.ceil(len(group)/3)), 'white')
