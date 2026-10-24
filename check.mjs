@@ -35,10 +35,10 @@ try {
    record.geometry=await article.evaluate(root=>{
     const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom};};
     const groups=selector=>[...root.querySelectorAll(selector)].map(e=>({text:e.textContent.trim(),...rect(e)}));
-    const controls=[...root.querySelectorAll('a.quick-button,a.buy-button')].map(e=>({text:e.innerText,...rect(e),color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target}));
+    const controls=[...root.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e=>({text:e.innerText,...rect(e),color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target}));
     return {innerWidth,article:rect(root),pageWidth:document.documentElement.scrollWidth,labels:groups('.quick-label-row'),primary:groups('.quick-actions .retailer-primary'),secondary:groups('.quick-actions .retailer-secondary,.quick-actions .quick-status'),controls,
      images:[...root.querySelectorAll('img')].map(e=>({src:e.currentSrc||e.src,loaded:e.complete&&e.naturalWidth>0,naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight,alt:e.alt,visible:e.getClientRects().length>0})),
-     overflow:[...root.querySelectorAll('*')].filter(e=>e.clientWidth>0&&e.scrollWidth>e.clientWidth+2&&!e.matches('.table-scroll,.scroll')).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
+     overflow:[...root.querySelectorAll('*')].filter(e=>e.getBoundingClientRect().height>1&&e.getBoundingClientRect().width>1&&!e.closest('thead')&&e.clientWidth>0&&e.scrollWidth>e.clientWidth+2&&!e.matches('.table-scroll,.scroll')).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
      sources:[...root.querySelectorAll('.sources a')].map(e=>({text:e.textContent,color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor})),
      links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel,target:e.target}))};
    });
@@ -74,6 +74,7 @@ try {
     check(states.focus.focused&&states.focus.outline!=='none','Keyboard-focus visibility needs review');
     record.states.push(states);
    }
+   await page.evaluate(()=>scrollTo(0,0));
    const bounds=await article.boundingBox();
    if(bounds){
     for(let y=Math.max(0,bounds.y);y<bounds.y+bounds.height;y+=800){
