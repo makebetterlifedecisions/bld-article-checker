@@ -2,7 +2,7 @@ import {chromium} from 'playwright';
 import fs from 'node:fs/promises';
 await fs.mkdir('results',{recursive:true});
 const url='https://www.betterlifedecisions.com.au/blogs/buying-guides/best-air-conditioner-type-australian-homes';
-const browser=await chromium.launch();
+const browser=await chromium.launch({args:['--disable-gpu']});
 const records=[];
 try{
 for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}]){
@@ -13,6 +13,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
  const article=page.locator('#bld-air-conditioning-types');await article.waitFor();
+ await page.addStyleTag({content:'html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}'});
  if(test.column)await article.evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important');},test.column);
  await page.evaluate(()=>document.fonts.ready);
  for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=650){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(100);}
@@ -54,9 +55,11 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  record.states.push({text:await b.innerText(),hover,focus});
  check(hover==='rgb(255, 255, 255)'&&focus.color==='rgb(255, 255, 255)','Button hover/focus text');check(focus.focused&&focus.outline!=='none','Keyboard focus not visible');
  }
- await page.evaluate(()=>scrollTo(0,0));await page.screenshot({path:'results/'+name+'-full.png',fullPage:true});
+ await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(150);await page.screenshot({path:'results/'+name+'-top-0.png'});
+ await page.evaluate(()=>scrollTo(0,700));await page.waitForTimeout(150);await page.screenshot({path:'results/'+name+'-top-700.png'});
+ await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(150);
  const bounds=await article.boundingBox();record.screenshots=[];
- for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=800,i++){await page.evaluate(y=>scrollTo(0,y),y);const path='results/'+name+'-'+String(i).padStart(3,'0')+'.png';await page.screenshot({path});record.screenshots.push(path);}
+ for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=700,i++){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(150);const path='results/'+name+'-'+String(i).padStart(3,'0')+'.png';await page.screenshot({path});record.screenshots.push(path);}
  record.status=record.errors.length?'FAIL':'AUTOMATED_CHECKS_PASSED_VISUAL_REVIEW_REQUIRED';
  }catch(e){record.errors.push(String(e));record.status='FAIL';}
  await context.close();
