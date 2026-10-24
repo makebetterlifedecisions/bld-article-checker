@@ -64,22 +64,23 @@ try {
     if(/link\.amazon\/|[?&](tag|campid)=/.test(link.href))check(link.rel.includes('sponsored'),`Affiliate sponsored missing: ${link.href}`);
    }
    record.states=[];
-   const buttons=article.locator('a.quick-button,a.buy-button');
+   const buttons=article.locator('a.quick-button,a.buy-button,.sources a');
    for(let i=0;i<await buttons.count();i++){
     const b=buttons.nth(i);await b.scrollIntoViewIfNeeded();
     const states={label:await b.innerText()};
+    const expected=await b.evaluate(e=>e.matches('a.quick-button,a.buy-button')?'rgb(255, 255, 255)':'rgb(7, 95, 155)');
     await b.hover();states.hover=await b.evaluate(e=>({color:getComputedStyle(e).color,height:e.getBoundingClientRect().height}));
     await b.focus();await page.keyboard.press('Shift+Tab');await page.keyboard.press('Tab');states.focus=await b.evaluate(e=>({focused:document.activeElement===e,color:getComputedStyle(e).color,outline:getComputedStyle(e).outlineStyle}));
     const box=await b.boundingBox();
     if(box){await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();states.active=await b.evaluate(e=>({active:e.matches(':active'),color:getComputedStyle(e).color}));await page.mouse.move(1,1);await page.mouse.up();}
-    for(const state of ['hover','focus','active'])check(states[state]?.color==='rgb(255, 255, 255)',`${state}: button text is not white`);
+    for(const state of ['hover','focus','active'])check(states[state]?.color===expected,`${state}: link contrast changed`);
     check(states.focus.focused&&states.focus.outline!=='none','Keyboard-focus visibility needs review');
     record.states.push(states);
    }
    await page.evaluate(()=>scrollTo(0,0));
    const bounds=await article.boundingBox();
    if(bounds){
-    for(let y=Math.max(0,bounds.y);y<bounds.y+bounds.height;y+=800){
+    for(let y=0;y<bounds.y+bounds.height;y+=800){
      await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(60);
      const filename=`results/${name}-${String(record.screenshots.length).padStart(3,'0')}.png`;
      await page.screenshot({path:filename});record.screenshots.push(filename);
