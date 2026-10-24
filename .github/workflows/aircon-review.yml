@@ -1,0 +1,54 @@
+name: Retrieve aircon visual evidence
+on:
+  push:
+    paths: ['.github/workflows/aircon-review.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:12560177060,archive_format:'zip'});
+            fs.writeFileSync('evidence.zip',Buffer.from(r.data));
+      - name: Encode review sheets
+        run: |
+          python - <<'PY'
+          import zipfile,json,io,base64,math
+          from PIL import Image,ImageDraw
+          z=zipfile.ZipFile('evidence.zip')
+          report=json.loads(z.read('report.json'))
+          for rec in report['records']:
+              name=rec['name']
+              im=Image.open(io.BytesIO(z.read(name+'-full.png'))).convert('RGB')
+              if rec['width']>=1000:
+                  g=rec['geometry']['article']
+                  left=max(0,int(g['x'])-8)
+                  im=im.crop((left,0,min(im.width,left+int(g['w'])+16),im.height))
+              tileh=900
+              tiles=[im.crop((0,y,im.width,min(y+tileh,im.height))) for y in range(0,im.height,tileh)]
+              for offset in range(0,len(tiles),12):
+                  group=tiles[offset:offset+12]
+                  sheet=Image.new('RGB',(im.width*3,(tileh+25)*math.ceil(len(group)/3)), 'white')
+                  d=ImageDraw.Draw(sheet)
+                  for j,t in enumerate(group):
+                      x=(j%3)*im.width;y=(j//3)*(tileh+25)
+                      d.text((x+5,y+5),name+' page '+str(offset+j)+' y='+str((offset+j)*tileh),fill='black')
+                      sheet.paste(t,(x,y+25))
+                  out=io.BytesIO();sheet.save(out,format='JPEG',quality=82)
+                  b64=base64.b64encode(out.getvalue()).decode()
+                  label=name+'-'+str(offset//12)
+                  for part in range(0,len(b64),16000):
+                      print('BLD_IMAGE '+json.dumps({'name':label,'part':part//16000,'data':b64[part:part+16000]}),flush=True)
+              print('BLD_SHEET_DONE '+name,flush=True)
+          PY
