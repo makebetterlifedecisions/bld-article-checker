@@ -1,0 +1,50 @@
+name: Aircon link state verification
+on:
+  push:
+    paths: ['.github/workflows/aircon-states.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  states:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Inspect link states
+        run: |
+          node --input-type=module <<'JS'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch();
+          const results=[];
+          try{
+          for(const width of [390,1366]){
+            const context=await browser.newContext({viewport:{width,height:900}});
+            const page=await context.newPage();
+            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/best-air-conditioner-type-australian-homes',{waitUntil:'domcontentloaded'});
+            const cdp=await context.newCDPSession(page);
+            await cdp.send('DOM.enable');await cdp.send('CSS.enable');
+            const doc=await cdp.send('DOM.getDocument');
+            for(const [kind,selector] of [['blue','#bld-air-conditioning-types .quick-button.retailer-primary'],['green','#bld-air-conditioning-types .quick-button.retailer-secondary'],['source','#bld-air-conditioning-types .sources a']]){
+              const link=page.locator(selector).first();await link.scrollIntoViewIfNeeded();
+              const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:doc.root.nodeId,selector});
+              for(const state of ['normal','hover','focus','active','visited']){
+                await cdp.send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:state==='normal'?[]:[state]});
+                const record=await link.evaluate(e=>({text:e.innerText,color:getComputedStyle(e).color,fill:getComputedStyle(e).webkitTextFillColor,background:getComputedStyle(e).backgroundColor}));
+                if(kind!=='source'&&(record.color!=='rgb(255, 255, 255)'||record.fill!=='rgb(255, 255, 255)'))throw Error('Purchase text contrast failed: '+kind+' '+state);
+                if(kind==='source'&&(record.color==='rgb(255, 255, 255)'||record.fill==='rgb(255, 255, 255)'))throw Error('Source link unreadable: '+state);
+                results.push({width,kind,state,...record});
+                console.log('STATE_IMAGE '+JSON.stringify({name:width+'-'+kind+'-'+state,data:(await link.screenshot()).toString('base64')}));
+              }
+              await cdp.send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:[]});
+            }
+            await context.close();
+          }
+          }finally{await browser.close();}
+          console.log('STATE_RESULTS '+JSON.stringify(results));
+          JS
