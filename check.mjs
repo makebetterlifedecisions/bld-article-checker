@@ -24,7 +24,7 @@ try {
    await article.waitFor({state:'visible'});
    if(test.column){
     // A disposable browser context tests the existing article in a narrow desktop column.
-    await article.evaluate((el,width)=>{el.style.setProperty('width',`${width}px`,'important');el.style.setProperty('max-width',`${width}px`,'important');},test.column);
+    await article.evaluate((el,width)=>{const column=el.parentElement;column.style.setProperty('width',`${width}px`,'important');column.style.setProperty('max-width',`${width}px`,'important');column.style.setProperty('min-width','0','important');el.style.setProperty('width','100%','important');el.style.setProperty('max-width','100%','important');},test.column);
    }
    await page.evaluate(()=>document.fonts.ready);
    // Scroll every screen so lazy-loaded images really enter the viewport.
