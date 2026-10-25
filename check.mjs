@@ -64,6 +64,17 @@ try {
     check(link.rel.includes('noopener')&&link.rel.includes('noreferrer'),`External rel missing: ${link.href}`);
     if(/link\.amazon\/|[?&](tag|campid)=/.test(link.href))check(link.rel.includes('sponsored'),`Affiliate sponsored missing: ${link.href}`);
    }
+   const visualTargets=[{name:'quick-cards',locator:article.locator('.quick-picks')}];
+   if([360,1366].includes(test.width)){
+    visualTargets.push({name:'ram-table',locator:article.locator('table').first()});
+    for(let i=0;i<await article.locator('.product').count();i++)visualTargets.push({name:'product-'+(i+1),locator:article.locator('.product').nth(i)});
+    for(let i=0;i<await article.locator('.supporting-visual').count();i++)visualTargets.push({name:'support-'+(i+1),locator:article.locator('.supporting-visual').nth(i)});
+    visualTargets.push({name:'sources',locator:article.locator('.sources').first()});
+   }
+   for(const target of visualTargets){
+    const bytes=await target.locator.screenshot({type:'jpeg',quality:45});
+    console.log('VISUAL_SHOT|'+name+'|'+target.name+'|'+bytes.toString('base64'));
+   }
    record.states=[];
    const buttons=article.locator('a.quick-button,a.buy-button,.sources a');
    for(let i=0;i<await buttons.count();i++){
