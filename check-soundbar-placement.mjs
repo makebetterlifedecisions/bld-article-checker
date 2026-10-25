@@ -58,11 +58,11 @@ const runTest=async test=>{
  record.states.push({text:await b.innerText(),hover,focus});
  check(hover==='rgb(255, 255, 255)'&&focus.color==='rgb(255, 255, 255)','Button hover/focus text');check(focus.focused&&focus.outline!=='none','Keyboard focus not visible');
  }
- await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(1200);await page.screenshot({path:'results/'+name+'-top-0.png'});
- await page.evaluate(()=>scrollTo(0,700));await page.waitForTimeout(1200);await page.screenshot({path:'results/'+name+'-top-700.png'});
- await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(1200);
+ await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(200);await page.screenshot({path:'results/'+name+'-top-0.png'});
+ await page.evaluate(()=>scrollTo(0,700));await page.waitForTimeout(200);await page.screenshot({path:'results/'+name+'-top-700.png'});
+ await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(200);
  const bounds=await article.boundingBox();record.screenshots=[];
- for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=700,i++){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(1200);const path='results/'+name+'-'+String(i).padStart(3,'0')+'.png';await page.screenshot({path});record.screenshots.push(path);}
+ for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=700,i++){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);const path='results/'+name+'-'+String(i).padStart(3,'0')+'.png';await page.screenshot({path});record.screenshots.push(path);}
  record.status=record.errors.length?'FAIL':'AUTOMATED_CHECKS_PASSED_VISUAL_REVIEW_REQUIRED';
  }catch(e){record.errors.push(String(e));record.status='FAIL';}
  await context.close();
