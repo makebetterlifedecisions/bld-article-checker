@@ -1,2 +1,2 @@
 https://www.betterlifedecisions.com.au/blogs/buying-guides/computer-ram-memory-explained
-# RAM guide responsive QA recheck 2026-10-25
+# Final responsive recheck after narrow-column CSS fix 2026-10-25
