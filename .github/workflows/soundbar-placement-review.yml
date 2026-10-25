@@ -1,0 +1,102 @@
+name: Retrieve soundbar placement visual evidence
+on:
+  workflow_run:
+    workflows: ['Soundbar placement desktop and mobile']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Browser check run ID
+        type: string
+        required: true
+permissions:
+  contents: read
+  actions: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      matrix: ${{ steps.prepare.outputs.matrix }}
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs=require('fs');
+            const run_id=context.payload.workflow_run?.id || Number(context.payload.inputs?.run_id);
+            const list=await github.rest.actions.listWorkflowRunArtifacts({owner:context.repo.owner,repo:context.repo.repo,run_id});
+            const artifact=list.data.artifacts.find(a=>a.name==='soundbar-placement-evidence');
+            if(!artifact)throw Error('Browser evidence artifact not found');
+            const r=await github.rest.actions.downloadArtifact({owner:context.repo.owner,repo:context.repo.repo,artifact_id:artifact.id,archive_format:'zip'});
+            fs.writeFileSync('evidence.zip',Buffer.from(r.data));
+      - name: Encode review sheets
+        id: prepare
+        run: |
+          python - <<'PY'
+          import zipfile,json,io,base64,math,os
+          os.makedirs('review-sheets',exist_ok=True)
+          from PIL import Image,ImageDraw
+          z=zipfile.ZipFile('evidence.zip')
+          report=json.loads(z.read('report.json'))
+          for rec in report['records']:
+              name=rec['name']
+              tiles=[]
+              for path in [name+'-top-0.png',name+'-top-700.png']+[p.replace('results/','',1) for p in rec['screenshots']]:
+                  frame=Image.open(io.BytesIO(z.read(path))).convert('RGB')
+                  if rec['width']>=1000 and '-top-' in path:
+                      frame.thumbnail((int(rec['geometry']['article']['w'])+16,900))
+                  if rec['width']>=1000 and '-top-' not in path:
+                      g=rec['geometry']['article']
+                      left=max(0,int(g['x'])-8)
+                      frame=frame.crop((left,0,min(frame.width,left+int(g['w'])+16),frame.height))
+                  pixels=list(frame.resize((64,64)).getdata())
+                  if sum(max(p)<25 for p in pixels)/len(pixels)>.8:
+                      raise RuntimeError('Invalid black screenshot capture: '+path)
+                  tiles.append(frame)
+              tileh=900
+              tilew=max(t.width for t in tiles)
+              for offset in range(0,len(tiles),12):
+                  group=tiles[offset:offset+12]
+                  sheet=Image.new('RGB',(tilew*3,(tileh+25)*math.ceil(len(group)/3)), 'white')
+                  d=ImageDraw.Draw(sheet)
+                  for j,t in enumerate(group):
+                      x=(j%3)*tilew;y=(j//3)*(tileh+25)
+                      d.text((x+5,y+5),name+' page '+str(offset+j)+' y='+str((offset+j)*tileh),fill='black')
+                      sheet.paste(t,(x,y+25))
+                  out=io.BytesIO();sheet.save(out,format='JPEG',quality=82)
+                  b64=base64.b64encode(out.getvalue()).decode()
+                  label=name+'-'+str(offset//12)
+                  open('review-sheets/'+label+'.jpg','wb').write(out.getvalue())
+              print('BLD_SHEET_DONE '+name,flush=True)
+          with open(os.environ['GITHUB_OUTPUT'],'a') as out:
+              out.write('matrix='+json.dumps({'sheet':[p[:-4] for p in sorted(os.listdir('review-sheets'))]})+'\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: soundbar-placement-review-sheets
+          path: review-sheets/
+          retention-days: 14
+  image:
+    needs: review
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 12
+      matrix: ${{ fromJSON(needs.review.outputs.matrix) }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: soundbar-placement-review-sheets
+          path: sheets
+      - name: Transfer one review sheet
+        env:
+          SHEET: ${{ matrix.sheet }}
+        run: |
+          if [ -f "sheets/$SHEET.jpg" ]; then
+            printf 'BLD_SHEET %s\n' "$SHEET"
+            base64 -w 16000 "sheets/$SHEET.jpg"
+            printf '\nBLD_SHEET_END\n'
+          fi
