@@ -45,6 +45,7 @@ try {
      links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel,target:e.target}))};
    });
    const g=record.geometry;
+   if(g.overflow.length)console.log(`${name} overflow elements: ${JSON.stringify(g.overflow)}`);
    const check=(ok,message)=>{if(!ok)record.errors.push(message);};
    check(g.innerWidth===test.width,'Requested viewport was not achieved');
    if(test.column)check(Math.abs(g.article.w-test.column)<=1,'Requested article-column width was not achieved');
@@ -84,8 +85,8 @@ try {
    if(bounds){
     for(let y=0;y<bounds.y+bounds.height;y+=800){
      await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(60);
-     const filename=`results/${name}-${String(record.screenshots.length).padStart(3,'0')}.png`;
-     await page.screenshot({path:filename});record.screenshots.push(filename);
+     const filename=`results/${name}-${String(record.screenshots.length).padStart(3,'0')}.jpg`;
+     await page.screenshot({path:filename,type:'jpeg',quality:50});record.screenshots.push(filename);
     }
    }
    // Browser privacy hides computed visited styles. Never fabricate that check or a full visual PASS.
