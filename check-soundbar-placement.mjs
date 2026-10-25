@@ -5,7 +5,8 @@ const url='https://www.betterlifedecisions.com.au/blogs/buying-guides/soundbar-s
 const browser=await chromium.launch();
 const records=[];
 try{
-for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}]){
+const cases=[...[360,390,480,680,1280,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}];
+const runTest=async test=>{
  const name=test.width+(test.column?'-column-'+test.column:'');
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
@@ -23,6 +24,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  const group=s=>[...root.querySelectorAll(s)].map(e=>({text:e.innerText,...rect(e)}));
  const rr=root.getBoundingClientRect();
  const textOverflow=[];
+ const blockOverflow=[...root.querySelectorAll('p,li,h2,h3,h4,td')].filter(e=>{const b=e.getBoundingClientRect();const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].some(t=>t.left<b.left-1||t.right>b.right+1)}).map(e=>e.innerText);
  for(const e of root.querySelectorAll('.quick-name,.quick-label,.quick-reason,.button-product,.button-store')){
  const parent=e.closest('.quick-pick,.quick-button,.buy-button'),b=parent?.getBoundingClientRect();
  if(!b)continue;const range=document.createRange();range.selectNodeContents(e);
@@ -32,7 +34,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  winnerPanel:[...root.querySelectorAll('.winner')].map(e=>({...rect(e),inner:e.clientWidth-parseFloat(getComputedStyle(e).paddingLeft)-parseFloat(getComputedStyle(e).paddingRight)})),winnerCopy:group('.winner-copy'),cards:group('.quick-pick'),labels:group('.quick-label-row'),primary:group('.quick-actions>.retailer-primary'),secondary:group('.quick-actions>.retailer-secondary,.quick-actions>.quick-status'),
  controls:[...root.querySelectorAll('.quick-button,.buy-button,.quick-status,.buy-status')].map(e=>({...rect(e),text:e.innerText,color:getComputedStyle(e).color})),
  images:[...document.querySelectorAll('img')].filter(e=>root.contains(e)||e.currentSrc.includes('samsung-q800h-placement-hero-3x2')).map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,w:e.naturalWidth,h:e.naturalHeight,alt:e.alt})),
- tableTextOverflow:[...root.querySelectorAll('td')].filter(e=>{const b=e.getBoundingClientRect();const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].some(r=>r.left<b.left-1||r.right>b.right+1);}).map(e=>e.innerText),productGrids:[...root.querySelectorAll('.product-layout')].map(e=>getComputedStyle(e).gridTemplateColumns),contentWidth:root.querySelector('.bld-content').clientWidth,textOverflow,headings:[...root.querySelectorAll('h2,h3')].map(e=>e.innerText),
+ tableTextOverflow:[...root.querySelectorAll('td')].filter(e=>{const b=e.getBoundingClientRect();const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].some(r=>r.left<b.left-1||r.right>b.right+1);}).map(e=>e.innerText),productGrids:[...root.querySelectorAll('.product-layout')].map(e=>getComputedStyle(e).gridTemplateColumns),contentWidth:root.querySelector('.bld-content').clientWidth,blockOverflow,textOverflow,headings:[...root.querySelectorAll('h2,h3')].map(e=>e.innerText),
  links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel})),
  outside:[...root.querySelectorAll('p,h2,h3,figure,.quick-picks,.buy-row,.sources')].filter(e=>{const r=e.getBoundingClientRect();return r.left<rr.left-1||r.right>rr.right+1;}).map(e=>e.className||e.tagName)};
  });
@@ -44,7 +46,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  check(g.controls.length===18,'Expected 18 controls including unavailable statuses');
  for(const c of g.controls){check(Math.abs(c.h-64)<=1,'Control height: '+c.text);check(c.color==='rgb(255, 255, 255)','Control text color: '+c.text);}
  check(!g.tableTextOverflow.length,'Table cell text overlap: '+g.tableTextOverflow.join(';'));if(g.contentWidth<=620)check(g.productGrids.every(s=>s.trim().split(/\s+/).length===1),'Product details must stack in narrow article columns');
- check(!g.textOverflow.length,'Text overflow: '+g.textOverflow.join(';'));check(!g.outside.length,'Elements outside article: '+g.outside.join(';'));
+ check(!g.blockOverflow.length,'Body text outside block: '+g.blockOverflow.join(';'));check(!g.textOverflow.length,'Text overflow: '+g.textOverflow.join(';'));check(!g.outside.length,'Elements outside article: '+g.outside.join(';'));
  check(g.images.length>=7&&g.images.every(e=>e.loaded&&e.alt),'Missing/broken images or alt');
  const hero=g.images.find(e=>e.src.includes('samsung-q800h-placement-hero-3x2'));check(hero&&Math.abs(hero.w/hero.h-1.5)<.01,'Hero ratio not3:2');
  for(const l of g.links.filter(e=>e.href.includes('campid=')))check(l.href.includes('campid=5339204720')&&l.rel.includes('sponsored'),'Affiliate tracking/rel');
@@ -66,6 +68,7 @@ for(const test of [...[360,390,480,680,1280,1366].map(width=>({width})),{width:1
  await context.close();
  console.log('BLD_RESULT '+JSON.stringify(record));
  await fs.writeFile('results/report.json',JSON.stringify({url,checkedAt:new Date().toISOString(),records},null,2));
-}
+};
+for(let i=0;i<cases.length;i+=2)await Promise.all(cases.slice(i,i+2).map(runTest));
 }finally{await browser.close();}
 if(records.some(r=>r.errors.length))process.exitCode=1;
