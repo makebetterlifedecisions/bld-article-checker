@@ -1,2 +1,2 @@
 https://www.betterlifedecisions.com.au/blogs/buying-guides/computer-ram-memory-explained
-# Verify 280px and 320px compact-card fallback 2026-10-25
+# Verify 280px and 320px table/card responsive layout 2026-10-25
