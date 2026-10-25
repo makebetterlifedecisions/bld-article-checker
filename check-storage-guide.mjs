@@ -88,3 +88,5 @@ for(let i=0;i<cases.length;i+=4)await Promise.all(cases.slice(i,i+4).map(runTest
 }finally{await browser.close();}
 if(records.some(r=>r.errors.length))process.exitCode=1;
 
+
+// Recheck narrow shortlist and responsiveness text after correction.
