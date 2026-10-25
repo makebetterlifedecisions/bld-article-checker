@@ -1,3 +1,5 @@
 https://www.betterlifedecisions.com.au/blogs/best-picks/best-travel-esims-australians
 
 # Recheck after responsive layout fix
+
+# Narrow-card cascade correction
