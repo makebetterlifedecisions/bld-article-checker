@@ -24,7 +24,7 @@ jobs:
           fs.mkdirSync('results',{recursive:true});
           const browser=await chromium.launch();
           const results=[];
-          for(const config of [{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366},{w:1366,col:280},{w:1366,col:320}]){
+          for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
            const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar',{waitUntil:'domcontentloaded'});
@@ -47,13 +47,13 @@ jobs:
            await page.locator('#bld-soundbar-guide .quick-picks').screenshot({path:`results/${tag}-cards.png`});
            await page.locator('#bld-soundbar-guide .sources').screenshot({path:`results/${tag}-sources.png`});
            data.failures=[];
-           if(data.pageOverflow)data.failures.push('page overflow');
+           if(data.pageOverflow)data.failures.push('page overflow');for(const c of data.cards)for(const row of c.rows)if(row.overflow)data.failures.push('card text overflow '+row.cls);
            for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
            for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
            if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
            results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
-           fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();
+           fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();if(data.failures.length)break;
           }
           await browser.close();if(results.some(x=>x.failures.length))process.exitCode=1;
           
