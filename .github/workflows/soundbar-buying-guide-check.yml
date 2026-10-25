@@ -30,7 +30,7 @@ jobs:
            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar',{waitUntil:'domcontentloaded'});
            await page.locator('#bld-soundbar-guide').waitFor();
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-soundbar-guide');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
-           for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(35)}
+           for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
            await page.waitForTimeout(1000);
            const data=await page.evaluate(()=>{
            const root=document.querySelector('#bld-soundbar-guide');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
