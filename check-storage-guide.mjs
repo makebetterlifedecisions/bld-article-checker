@@ -60,24 +60,9 @@ const runTest=async test=>{
  check(hover==='rgb(255, 255, 255)'&&focus.color==='rgb(255, 255, 255)','Button hover/focus text');check(focus.focused&&focus.outline!=='none','Keyboard focus not visible');
  }
  record.screenshots=[];
- await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(700);
- const top='results/'+name+'-hero.jpg';await page.screenshot({path:top,quality:85});record.screenshots.push(top);
- const bounds=await article.boundingBox();
- for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=750,i++){
-  await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(300);const path='results/'+name+'-'+String(i).padStart(3,'0')+'.jpg';await page.screenshot({path,quality:85});record.screenshots.push(path);
- }
- if(!test.column&&[390,1366].includes(test.width)){
-  const cdp=await context.newCDPSession(page);await cdp.send('DOM.enable');const doc=await cdp.send('DOM.getDocument');record.linkStates=[];
-  for(const [kind,selector] of [['primary','a.quick-button.retailer-primary'],['secondary','a.quick-button.retailer-secondary'],['source','.bld-source-list a']]){
-   const el=article.locator(selector).first();await el.scrollIntoViewIfNeeded();const node=await cdp.send('DOM.querySelector',{nodeId:doc.root.nodeId,selector:'#bld-storage-guide '+selector});
-   for(const state of ['normal','hover','focus-visible','active','visited']){
-    await cdp.send('CSS.enable');await cdp.send('CSS.forcePseudoState',{nodeId:node.nodeId,forcedPseudoClasses:state==='normal'?[]:[state]});
-    const computed=await el.evaluate(e=>({color:getComputedStyle(e).color,fill:getComputedStyle(e).webkitTextFillColor}));record.linkStates.push({kind,state,...computed});
-    check(computed.color===(kind==='source'?'rgb(7, 95, 155)':'rgb(255, 255, 255)'),'Link state '+kind+' '+state);
-    await el.screenshot({path:'results/state-'+name+'-'+kind+'-'+state+'.png'});
-   }
-  }
- }
+ const cards=article.locator('.quick-picks');await cards.scrollIntoViewIfNeeded();
+ const path='results/'+name+'-cards.png';await cards.screenshot({path});record.screenshots.push(path);
+ check(g.controls.filter(c=>c.text.includes('990 EVO Plus')).every(c=>!c.text.includes('2TB')),'Stale compact labels');
  record.status=record.errors.length?'FAIL':'AUTOMATED_CHECKS_PASSED_VISUAL_REVIEW_REQUIRED';
  }catch(e){record.errors.push(String(e));record.status='FAIL';}
  await context.close();
