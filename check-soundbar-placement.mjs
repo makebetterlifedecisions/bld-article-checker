@@ -69,6 +69,6 @@ const runTest=async test=>{
  console.log('BLD_RESULT '+JSON.stringify(record));
  await fs.writeFile('results/report.json',JSON.stringify({url,checkedAt:new Date().toISOString(),records},null,2));
 };
-for(let i=0;i<cases.length;i+=2)await Promise.all(cases.slice(i,i+2).map(runTest));
+for(let i=0;i<cases.length;i+=4)await Promise.all(cases.slice(i,i+4).map(runTest));
 }finally{await browser.close();}
 if(records.some(r=>r.errors.length))process.exitCode=1;
