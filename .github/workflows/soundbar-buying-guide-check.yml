@@ -65,3 +65,5 @@ jobs:
           name: soundbar-buying-guide-check
           path: results/
           retention-days: 14
+
+# Verify intrinsic rows with parent-column breakpoint integration.
