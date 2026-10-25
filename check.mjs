@@ -8,7 +8,7 @@ if(parsed.protocol!=='https:' || !['www.betterlifedecisions.com.au','betterlifed
 await fs.mkdir('results',{recursive:true});
 const browser=await chromium.launch();
 const results=[];
-const checks=[...[360,390,480,680,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}];
+const checks=[...[360,390,480,680,1280,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}];
 try {
  for(const test of checks){
   const name=`${test.width}${test.column?'-column-'+test.column:''}`;
@@ -55,7 +55,7 @@ try {
     const items=g[key];check(items.length===3,`${key}: expected three peers`);
     for(const field of fields)if(items.length)check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1,`${key}: unequal ${field}`);
    }
-   check(g.controls.length===18,'Expected 18 purchase controls for this three-product guide');
+   check(g.controls.length===9,'Expected six retailer buttons plus three availability notes for this three-product guide');
    for(const b of g.controls){check(Math.abs(b.h-64)<=1,`Control height: ${b.text}`);check(b.color==='rgb(255, 255, 255)',`Control text is not white: ${b.text}`);}
    check(g.images.filter(e=>e.visible).every(e=>e.loaded&&e.alt.trim()),'Visible image failed loading or alt check');
    for(const link of g.links.filter(e=>/^https?:/.test(e.href))){
