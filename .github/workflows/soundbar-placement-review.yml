@@ -46,10 +46,12 @@ jobs:
               name=rec['name']
               tiles=[]
               for path in [name+'-top-0.png',name+'-top-700.png']+[p.replace('results/','',1) for p in rec['screenshots']]:
+                  if path not in z.namelist():
+                      continue
                   frame=Image.open(io.BytesIO(z.read(path))).convert('RGB')
                   if rec['width']>=1000 and '-top-' in path:
                       frame.thumbnail((int(rec['geometry']['article']['w'])+16,900))
-                  if rec['width']>=1000 and '-top-' not in path:
+                  if rec['width']>=1000 and '-top-' not in path and not path.endswith('-cards.png'):
                       g=rec['geometry']['article']
                       left=max(0,int(g['x'])-8)
                       frame=frame.crop((left,0,min(frame.width,left+int(g['w'])+16),frame.height))
