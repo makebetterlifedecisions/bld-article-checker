@@ -1,0 +1,37 @@
+name: BLD travel eSIM article check
+on:
+  push:
+    paths:
+      - 'travel-esim-check.mjs'
+      - 'travel-esim-url.txt'
+      - '.github/workflows/travel-esim-check.yml'
+      - 'package.json'
+  workflow_dispatch:
+    inputs:
+      article_url:
+        description: Exact public BLD travel eSIM article URL
+        required: false
+        type: string
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Check travel eSIM article
+        run: node travel-esim-check.mjs
+        env:
+          ARTICLE_URL: ${{ inputs.article_url }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bld-travel-esim-check
+          path: results/
+          retention-days: 14
