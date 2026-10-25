@@ -4,6 +4,7 @@ await fs.mkdir('results',{recursive:true});
 const url='https://www.betterlifedecisions.com.au/blogs/buying-guides/soundbar-subwoofer-placement-guide';
 const browser=await chromium.launch();
 const records=[];
+// Recheck the corrected named table query, 25 October.
 try{
 const cases=[...[360,390,480,680,1280,1366].map(width=>({width})),{width:1366,column:280},{width:1366,column:320}];
 const runTest=async test=>{
