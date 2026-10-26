@@ -1,4 +1,5 @@
 name: Phone storage article QA
+# Recheck narrow card actions and long heading after observed 280px overflow.
 on:
   push:
     paths:
