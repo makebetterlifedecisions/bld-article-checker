@@ -38,7 +38,7 @@ try {
     const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom};};
     const groups=selector=>[...root.querySelectorAll(selector)].map(e=>({text:e.textContent.trim(),...rect(e)}));
     const controls=[...root.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e=>({text:e.innerText,...rect(e),color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target}));
-    return {innerWidth,article:rect(root),pageWidth:document.documentElement.scrollWidth,labels:groups('.quick-label-row'),primary:groups('.quick-actions .retailer-primary'),secondary:groups('.quick-actions .retailer-secondary,.quick-actions .quick-status'),controls,
+    const cardXs=[...root.querySelectorAll('.quick-picks>.quick-pick')].map(e=>e.getBoundingClientRect().x);const scrollRegions=[...root.querySelectorAll('.table-wrapper')].map(e=>({width:e.clientWidth,scrollWidth:e.scrollWidth,overflowX:getComputedStyle(e).overflowX,tabIndex:e.tabIndex,role:e.getAttribute('role')}));\n     return {innerWidth,article:rect(root),pageWidth:document.documentElement.scrollWidth,cardXs,scrollRegions,labels:groups('.quick-label-row'),primary:groups('.quick-actions .retailer-primary'),secondary:groups('.quick-actions .retailer-secondary,.quick-actions .quick-status'),controls,
      images:[...root.querySelectorAll('img')].map(e=>({src:e.currentSrc||e.src,loaded:e.complete&&e.naturalWidth>0,naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight,alt:e.alt,visible:e.getClientRects().length>0})),
      overflow:[...root.querySelectorAll('*')].filter(e=>e.getBoundingClientRect().height>1&&e.getBoundingClientRect().width>1&&!e.closest('thead')&&e.clientWidth>0&&e.scrollWidth>e.clientWidth+2&&!e.matches('.table-scroll,.scroll,.table-wrapper,.bld-article__table-inner')).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
      sources:[...root.querySelectorAll('.sources a')].map(e=>({text:e.textContent,color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor})),
@@ -51,10 +51,14 @@ try {
    check(g.pageWidth<=g.innerWidth+1,'Horizontal page overflow');
    check(g.overflow.length===0,'Article contains overflowing elements');
    check(g.labels.length===3,'Canonical three-card labels missing; route-specific checking is required');
-   for(const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']]]){
+   const stacked=g.cardXs.length===3&&g.cardXs.every(x=>Math.abs(x-g.cardXs[0])<=1);
+   for(const [key,fields] of [['labels',stacked?['w','h']:['w','h','y','bottom']],['primary',stacked?['w','h']:['h','y']],['secondary',stacked?['w','h']:['h','y']]]){
     const items=g[key];check(items.length===3,`${key}: expected three peers`);
     for(const field of fields)if(items.length)check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1,`${key}: unequal ${field}`);
    }
+   if(stacked)check(g.cardXs.every(x=>Math.abs(x-g.cardXs[0])<=1),'Stacked cards are not aligned to one column');
+   check(g.scrollRegions.length===1,'Expected one comparison-table scroll region');
+   if(g.innerWidth<=480||test.column)for(const r of g.scrollRegions)check(r.scrollWidth>r.width+2&&['auto','scroll'].includes(r.overflowX)&&r.tabIndex===0&&r.role==='region','Comparison table is not keyboard-accessible and horizontally scrollable');
    check(g.controls.length===9,'Expected six direct provider purchase links and three honest unavailable second-retailer notices');
    check(g.controls.filter(e=>e.href).length===6,'Expected six direct provider purchase links across quick picks and detailed sections');
    check(g.controls.filter(e=>!e.href).length===3,'Expected three explicit unavailable second-retailer notices');
