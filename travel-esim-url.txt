@@ -3,3 +3,5 @@ https://www.betterlifedecisions.com.au/blogs/best-picks/best-travel-esims-austra
 # Recheck after responsive layout fix
 
 # Narrow-card cascade correction
+
+# Source contrast fix 2026-10-26
