@@ -15,14 +15,14 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts
-      - run: npx playwright install --with-deps chromium
+      - run: google-chrome --version
       - name: Measure and capture whole article
         run: |
           cat > check-iphone-galaxy-guide.mjs <<'BLD_SCRIPT'
           import { chromium } from 'playwright';
           import fs from 'node:fs';
           fs.mkdirSync('results',{recursive:true});
-          const browser=await chromium.launch();
+          const browser=await chromium.launch({channel:'chrome'});
           const results=[];
           for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
@@ -32,11 +32,12 @@ jobs:
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-iphone-galaxy');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
            for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
            await page.waitForTimeout(1000);
-           const data=await page.evaluate(()=>{
+           const data=await page.evaluate(async()=>{
            const root=document.querySelector('#bld-iphone-galaxy');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
+           const imageProbes=await Promise.all([...root.querySelectorAll('img')].map(e=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve({src:i.src,loaded:true});i.onerror=()=>resolve({src:i.src,loaded:false});i.src=e.getAttribute('src')||e.dataset.src||'';if(!i.src)resolve({src:'',loaded:false})})));
            const controls=[...root.querySelectorAll('a.quick-button,.quick-status')].map(e=>({text:e.textContent,box:box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,padding:getComputedStyle(e).padding,overflow:e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1,children:[...e.children].map(x=>({text:x.textContent,box:box(x),color:getComputedStyle(x).color,font:getComputedStyle(x).fontSize}))}));
            const cards=[...root.querySelectorAll('.quick-pick')].map(e=>({box:box(e),rows:[...e.children].map(x=>({cls:x.className,box:box(x),overflow:x.scrollWidth>x.clientWidth+1}))}));
-           return {viewport:innerWidth,article:box(root),pageOverflow:document.documentElement.scrollWidth>innerWidth+1,controls,cards,images:[...document.querySelectorAll('.bld-article__featured img,#bld-iphone-galaxy img')].map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,native:[e.naturalWidth,e.naturalHeight],box:box(e)})),sources:[...root.querySelectorAll('.sources a')].map(e=>({text:e.textContent,color:getComputedStyle(e).color})),headings:root.querySelectorAll('h2').length,stacks:[...root.querySelectorAll('.bldp-buy-row')].map(box)};
+           return {imageProbes,viewport:innerWidth,article:box(root),pageOverflow:document.documentElement.scrollWidth>innerWidth+1,controls,cards,images:[...document.querySelectorAll('.bld-article__featured img,#bld-iphone-galaxy img')].map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,native:[e.naturalWidth,e.naturalHeight],box:box(e)})),sources:[...root.querySelectorAll('.sources a')].map(e=>({text:e.textContent,color:getComputedStyle(e).color})),headings:root.querySelectorAll('h2').length,stacks:[...root.querySelectorAll('.bldp-buy-row')].map(box)};
            });
            data.states=[];
            for(const loc of [...await page.locator('#bld-iphone-galaxy a.quick-button').all(),page.locator('#bld-iphone-galaxy .sources a').first()]){
@@ -50,7 +51,7 @@ jobs:
            if(data.pageOverflow)data.failures.push('page overflow');for(const c of data.cards)for(const row of c.rows)if(row.overflow)data.failures.push('card text overflow '+row.cls);
            for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
            for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
-           if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
+           if(data.images.some(x=>x.box.w>0&&x.box.h>0&&!x.loaded)||data.imageProbes.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
            results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
            fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();if(data.failures.length)break;
