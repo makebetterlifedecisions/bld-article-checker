@@ -25,5 +25,5 @@ jobs:
         if: always()
         with:
           name: phone-storage-qa
-          path: artifacts/
+          path: results/
           retention-days: 14
