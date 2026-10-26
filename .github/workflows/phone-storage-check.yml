@@ -18,7 +18,7 @@ jobs:
           node-version: '22'
       - run: npm install --ignore-scripts
       - run: npx playwright install --with-deps chromium
-      - run: node check.mjs
+      - run: node phone-storage-check.mjs
         env:
           ARTICLE_URL: https://www.betterlifedecisions.com.au/blogs/buying-guides/how-much-phone-storage-do-you-need
       - uses: actions/upload-artifact@v4
