@@ -1,19 +1,53 @@
-name: BLD article check
+name: BLD article batch check
 on:
   push:
     paths: ['check.mjs', 'package.json', '.github/workflows/article-check.yml', 'article-url.txt']
   workflow_dispatch:
     inputs:
-      article_url:
-        description: Exact public BLD article URL
+      article_urls:
+        description: Exact public BLD article URLs, one per line. Leave blank to check article-url.txt.
         required: false
         type: string
 permissions:
   contents: read
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.urls.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - id: urls
+        name: Validate and expand article URL list
+        env:
+          ARTICLE_URLS: ${{ github.event.inputs.article_urls }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const supplied=(process.env.ARTICLE_URLS||'').trim();
+          const source=supplied||fs.readFileSync('article-url.txt','utf8');
+          const urls=source.split(/\r?\n/).map(x=>x.trim()).filter(x=>x&&!x.startsWith('#'));
+          if(!urls.length) throw new Error('No BLD article URLs supplied.');
+          if(new Set(urls).size!==urls.length) throw new Error('Duplicate article URLs are not allowed.');
+          const matrix=urls.map((url,index)=>{
+            const parsed=new URL(url);
+            if(parsed.protocol!=='https:'||!['www.betterlifedecisions.com.au','betterlifedecisions.com.au'].includes(parsed.hostname)||!parsed.pathname.startsWith('/blogs/')) throw new Error('Only public BLD article URLs are allowed: '+url);
+            const handle=parsed.pathname.split('/').filter(Boolean).at(-1);
+            return {url,slug:String(index+1).padStart(2,'0')+'-'+handle.replace(/[^a-zA-Z0-9_-]/g,'-')};
+          });
+          fs.appendFileSync(process.env.GITHUB_OUTPUT,'matrix='+JSON.stringify({include:matrix})+'\n');
+          NODE
   check:
+    needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -21,13 +55,15 @@ jobs:
           node-version: '22'
       - run: npm install --ignore-scripts
       - run: npx playwright install --with-deps chromium
-      - name: Check article
+      - name: Check public article
         run: node check.mjs
         env:
-          ARTICLE_URL: ${{ inputs.article_url }}
+          ARTICLE_URL: ${{ matrix.url }}
+          RESULTS_DIR: results
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: bld-article-check
+          name: bld-article-check-${{ matrix.slug }}
           path: results/
           retention-days: 14
+
