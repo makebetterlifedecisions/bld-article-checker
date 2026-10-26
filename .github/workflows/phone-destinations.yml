@@ -32,3 +32,5 @@ jobs:
           name: phone-destinations
           path: destinations/
           retention-days: 7
+
+# User-requested fresh offer retry, 27 October 2026.
