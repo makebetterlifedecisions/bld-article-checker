@@ -91,3 +91,4 @@ if(records.some(r=>r.errors.length))process.exitCode=1;
 
 
 // Recheck narrow shortlist and responsiveness text after correction.
+// Check two natural word breaks in the narrowest column.
