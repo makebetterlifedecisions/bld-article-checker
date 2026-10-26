@@ -61,7 +61,7 @@ const runTest=async test=>{
  }
  record.screenshots=[];
  await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(400);
- const hero='results/'+name+'-hero.jpg';await page.screenshot({path:hero,quality:85});record.screenshots.push(hero);
+ const heroPath='results/'+name+'-hero.jpg';await page.screenshot({path:heroPath,quality:85});record.screenshots.push(heroPath);
  const heroImage=page.locator('img[src*="samsung-galaxy-a57-5g-cafe-featured-3x2"]').first();await heroImage.scrollIntoViewIfNeeded();await page.waitForTimeout(300);await page.screenshot({path:'results/'+name+'-hero-full.jpg',quality:85});record.screenshots.push('results/'+name+'-hero-full.jpg');
  const bounds=await article.boundingBox();
  for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=750,i++){
