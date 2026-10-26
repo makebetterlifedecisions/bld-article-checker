@@ -6,6 +6,7 @@ const urlsText = inputUrl || (await fs.readFile('article-url.txt', 'utf8').catch
 const url = urlsText.split(/\r?\n/).map(line => line.trim()).find(line => line && !line.startsWith('#'));
 if (!url) throw new Error('No ARTICLE_URL or public BLD article URL was supplied.');
 const parsed = new URL(url);
+const handle = parsed.pathname.split('/').filter(Boolean).at(-1);
 if (parsed.protocol !== 'https:' || !['www.betterlifedecisions.com.au','betterlifedecisions.com.au'].includes(parsed.hostname) || !parsed.pathname.startsWith('/blogs/')) {
   throw new Error('Only public BLD article URLs are allowed');
 }
@@ -107,7 +108,8 @@ try {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        check(g.controls.length===18, 'Expected 18 purchase/status controls for this three-product guide');
+        const expectedControls = ({'best-travel-esims-australians': 9, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
+        check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
       }
