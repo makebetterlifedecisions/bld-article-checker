@@ -1,0 +1,35 @@
+name: Phone destination verification
+on:
+  push:
+    paths: ['.github/workflows/phone-destinations.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          cat > phone-destinations.mjs <<'JS'
+          import {chromium} from 'playwright';
+          import fs from 'node:fs';
+          fs.mkdirSync('destinations',{recursive:true});
+          const browser=await chromium.launch();
+          const urls=['https://link.amazon/B0hhp8fJ0','https://link.amazon/B06EKI9F3','https://link.amazon/B0876DpSz','https://www.ebay.com.au/itm/406370446006','https://www.ebay.com.au/itm/147196660657','https://www.ebay.com.au/itm/406754757535'];
+          const rows=[];
+          for(let i=0;i<urls.length;i++){const page=await browser.newPage();try{await page.goto(urls[i],{waitUntil:'domcontentloaded',timeout:45000});await page.waitForTimeout(2500);const text=await page.locator('body').innerText();fs.writeFileSync('destinations/'+i+'.txt',text);await page.screenshot({path:'destinations/'+i+'.png',fullPage:true});const row={url:urls[i],final:page.url(),title:await page.title(),text:text.slice(0,20000)};rows.push(row);console.log('DEST '+JSON.stringify({...row,text:text.slice(0,6000)}))}catch(e){rows.push({url:urls[i],error:e.message})}await page.close()}
+          fs.writeFileSync('destinations/report.json',JSON.stringify(rows,null,2));await browser.close();
+          JS
+          node phone-destinations.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phone-destinations
+          path: destinations/
+          retention-days: 7
