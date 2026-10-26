@@ -78,6 +78,14 @@ try {
           card:(()=>{const c=e.closest('.quick-pick');if(!c)return null;const r=c.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})(),
           action:(()=>{const a=e.closest('.quick-actions');if(!a)return null;const r=a.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})()
         }));
+        const inHorizontalScrollRegion = el => {
+          for(let n=el;n;n=n.parentElement) {
+            const classes=typeof n.className==='string'?n.className:'';
+            if(/table-wrapper|table-inner|table-scroll|(^|\\s)scroll(\\s|$)/.test(classes) &&
+              ['auto','scroll'].includes(getComputedStyle(n).overflowX)) return true;
+          }
+          return false;
+        };
         return {
           innerWidth:window.innerWidth,
           article:rect(root),
@@ -96,11 +104,7 @@ try {
             e.getBoundingClientRect().height>1 && e.getBoundingClientRect().width>1 &&
             !e.closest('thead') && e.clientWidth>0 && e.scrollWidth>e.clientWidth+2 &&
             !e.matches('.tile-arrow') &&
-            !([...e.classList].some(c=>/table-wrapper|table-inner|table-scroll|^scroll$/.test(c)) &&
-              ['auto','scroll'].includes(getComputedStyle(e).overflowX)) &&
-            ![...e.parentElement ? (function*(){for(let n=e.parentElement;n;n=n.parentElement)yield n})() : []].some(n=>
-              [...n.classList].some(c=>/table-wrapper|table-inner|table-scroll|^scroll$/.test(c)) &&
-              ['auto','scroll'].includes(getComputedStyle(n).overflowX))
+            !inHorizontalScrollRegion(e)
           ).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
           sources:[...root.querySelectorAll('.sources a')].map(e=>({
             text:e.textContent,color:getComputedStyle(e).color,
