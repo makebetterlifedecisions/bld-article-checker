@@ -7,3 +7,5 @@ https://www.betterlifedecisions.com.au/blogs/best-picks/best-travel-esims-austra
 # Source contrast fix 2026-10-26
 
 # Recheck after master-driven photo and copy corrections 2026-10-26
+
+# Contrast refinement check after Shopify caption fix 2026-10-26
