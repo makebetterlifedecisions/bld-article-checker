@@ -34,17 +34,26 @@ try {
     try {
       const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
       if (!response || !response.ok()) throw new Error('Article HTTP ' + (response && response.status()));
-      const article = page.locator('article.bld-best-picks, article.bld-article').first();
+      const route = parsed.pathname.split('/')[2];
+      record.routeType = route === 'troubleshooting'
+        ? 'troubleshooting'
+        : ['best-picks','buying-guides'].includes(route)
+          ? 'best-picks-or-buying-guide'
+          : 'other';
+      const article = record.routeType === 'best-picks-or-buying-guide'
+        ? page.locator('article.bld-best-picks').first()
+        : page.locator('article.bld-article').first();
       await article.waitFor({ state: 'visible', timeout: 20000 });
-      record.routeType = await article.evaluate(el => el.classList.contains('bld-best-picks') ? 'best-picks-or-buying-guide' : 'troubleshooting');
       if (test.column) {
         await article.evaluate((el,width) => {
-          const column = el.parentElement;
-          column.style.setProperty('width', width + 'px', 'important');
-          column.style.setProperty('max-width', width + 'px', 'important');
-          column.style.setProperty('min-width', '0', 'important');
-          el.style.setProperty('width', '100%', 'important');
-          el.style.setProperty('max-width', '100%', 'important');
+          for (const [name,value] of Object.entries({
+            'box-sizing':'border-box',
+            'width':width+'px',
+            'max-width':width+'px',
+            'min-width':'0',
+            'margin-left':'0',
+            'margin-right':'0'
+          })) el.style.setProperty(name,value,'important');
         }, test.column);
       }
       await page.evaluate(() => document.fonts.ready);
@@ -65,7 +74,9 @@ try {
         const controls = [...root.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e => ({
           text:e.innerText || e.textContent.trim(), ...rect(e),
           color:getComputedStyle(e).color, background:getComputedStyle(e).backgroundColor,
-          href:e.href || '', rel:e.rel || '', target:e.target || ''
+          href:e.href || '', rel:e.rel || '', target:e.target || '',
+          card:(()=>{const c=e.closest('.quick-pick');if(!c)return null;const r=c.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})(),
+          action:(()=>{const a=e.closest('.quick-actions');if(!a)return null;const r=a.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})()
         }));
         return {
           innerWidth:window.innerWidth,
@@ -78,12 +89,18 @@ try {
           images:[...root.querySelectorAll('img')].map(e=>({
             src:e.currentSrc||e.src, loaded:e.complete&&e.naturalWidth>0,
             naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight,
-            alt:e.alt,visible:e.getClientRects().length>0
+            alt:e.alt,decorative:e.getAttribute('aria-hidden')==='true'||!!e.closest('[aria-hidden="true"]'),
+            visible:e.getClientRects().length>0
           })),
           overflow:[...root.querySelectorAll('*')].filter(e=>
             e.getBoundingClientRect().height>1 && e.getBoundingClientRect().width>1 &&
             !e.closest('thead') && e.clientWidth>0 && e.scrollWidth>e.clientWidth+2 &&
-            !e.matches('.table-scroll,.scroll')
+            !e.matches('.tile-arrow') &&
+            !([...e.classList].some(c=>/table-wrapper|table-inner|table-scroll|^scroll$/.test(c)) &&
+              ['auto','scroll'].includes(getComputedStyle(e).overflowX)) &&
+            ![...e.parentElement ? (function*(){for(let n=e.parentElement;n;n=n.parentElement)yield n})() : []].some(n=>
+              [...n.classList].some(c=>/table-wrapper|table-inner|table-scroll|^scroll$/.test(c)) &&
+              ['auto','scroll'].includes(getComputedStyle(n).overflowX))
           ).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
           sources:[...root.querySelectorAll('.sources a')].map(e=>({
             text:e.textContent,color:getComputedStyle(e).color,
@@ -98,7 +115,7 @@ try {
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
       check(g.pageWidth <= g.innerWidth+1, 'Horizontal page overflow');
       check(g.overflow.length===0, 'Article contains overflowing elements');
-      check(g.images.filter(e=>e.visible).every(e=>e.loaded&&e.alt.trim()), 'Visible article image failed loading or alt check');
+      check(g.images.filter(e=>e.visible).every(e=>e.loaded&&(e.alt.trim()||e.decorative)), 'Visible article image failed loading or alt check');
       if (record.routeType === 'best-picks-or-buying-guide') {
         check(g.labels.length===3, 'Canonical three-card labels missing');
         for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']]]) {
@@ -114,6 +131,12 @@ try {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
       }
       for (const control of g.controls) check(Math.abs(control.h-64)<=1, 'Control is not 64px high: '+control.text);
+      for (const control of g.controls.filter(e=>e.card)) {
+        check(control.x>=control.card.x-1 && control.x+control.w<=control.card.x+control.card.w+1,
+          'Quick control spills outside its card: '+control.text);
+        if(control.action) check(Math.abs(control.x-control.action.x)<=1 && Math.abs(control.w-control.action.w)<=1,
+          'Quick control does not fill its action row: '+control.text);
+      }
       for (const control of g.controls.filter(e=>e.href)) {
         check(control.color==='rgb(255, 255, 255)', 'Purchase text is not white: '+control.text);
       }
@@ -126,10 +149,17 @@ try {
       const buttons=article.locator('a.quick-button,a.buy-button,.sources a');
       for(let i=0;i<await buttons.count();i++){
         const b=buttons.nth(i);
-        await b.evaluate(e=>e.scrollIntoView({block:'center',inline:'nearest'}));
+        await b.evaluate(e=>{
+          const r=e.getBoundingClientRect();
+          const sticky=document.querySelector('#shopify-section-bld-header');
+          const stickyBottom=sticky?Math.max(0,sticky.getBoundingClientRect().bottom):0;
+          const targetY=Math.max(stickyBottom+24,window.innerHeight*.38);
+          window.scrollTo({top:window.scrollY+r.top-targetY,behavior:'instant'});
+        });
+        await page.waitForTimeout(100);
         const states={label:await b.innerText()};
         const expected=await b.evaluate(e=>e.matches('a.quick-button,a.buy-button')?'rgb(255, 255, 255)':getComputedStyle(e).color);
-        await b.hover();
+        await b.hover({timeout:10000});
         states.hover=await b.evaluate(e=>({color:getComputedStyle(e).color,height:e.getBoundingClientRect().height}));
         await b.focus();
         await page.keyboard.press('Shift+Tab');
