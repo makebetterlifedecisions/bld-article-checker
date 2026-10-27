@@ -1,5 +1,5 @@
 name: Laptop desktop article QA
-# Verify the explicit inner-content container at 280px and 320px.
+# Verify final model-code fix, hero, content counts and source styling.
 on:
   push:
     paths:
