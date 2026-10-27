@@ -52,6 +52,10 @@ try {
       if(m.overflow.length)err('Content descendants exceed their boxes outside responsive table regions');
       if(m.cards.length!==3)err('Expected three cards');
       if(m.rows.some(r=>r.length!==5))err('Each card must contain the canonical five intrinsic rows');
+      for(const rows of m.rows){
+        for(let row=1;row<rows.length;row++)if(rows[row].y<rows[row-1].bottom-1)err('Canonical card rows overlap: '+row);
+        for(const row of rows)if(row.scrollHeight>row.clientHeight+2)err('Card row clips vertical content: '+row.class);
+      }
       for(let row=0;row<5;row++){
         const rs=m.rows.map(c=>c[row]);
         if(Math.max(...rs.map(x=>x.y))-Math.min(...rs.map(x=>x.y))>1)err('Shared row '+row+' does not align');
@@ -125,7 +129,14 @@ try {
       record.visitedForced=await root.locator('a.quick-button,a.buy-button,.sources a').evaluateAll(es=>es.map(e=>({text:(e.innerText||e.textContent).trim(),color:getComputedStyle(e).color,forcedPseudoState:true})));
       await cdp.detach();
       await page.evaluate(()=>{getSelection()?.removeAllRanges();scrollTo(0,0)});
-      await page.screenshot({path:'results/'+name+'-details.png',fullPage:true});
+      record.screenshots=[];
+      const finalHeight=await page.evaluate(()=>document.documentElement.scrollHeight);
+      for(let y=0,index=0;y<finalHeight;y+=700,index++){
+        await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);
+        const path='results/evidence-'+name+'-'+String(index).padStart(3,'0')+'.png';
+        record.screenshots.push({path,scrollY:await page.evaluate(()=>scrollY)});
+        await page.screenshot({path});
+      }
       await fs.writeFile('results/details-'+name+'.json',JSON.stringify(record,null,2));
     } catch(e) {record.errors.push(String(e));record.status='FAIL';}
     finally {console.log(name+': '+record.status+' '+JSON.stringify(record.errors));await context.close();}
