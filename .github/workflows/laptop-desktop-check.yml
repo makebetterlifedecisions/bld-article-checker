@@ -1,5 +1,5 @@
 name: Laptop desktop article QA
-# Final verification of narrow-column tables and retailer text fit.
+# Verify original 3:2 hero separately from CDN integer-pixel resizing.
 on:
   push:
     paths:
