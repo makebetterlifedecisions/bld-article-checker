@@ -31,6 +31,7 @@ try {
       await page.evaluate(()=>scrollTo(0,0));
       const allImages=await root.locator('img').evaluateAll(async imgs=>Promise.all(imgs.map(im=>im.decode().then(()=>({src:im.currentSrc||im.src,loaded:true,naturalWidth:im.naturalWidth,naturalHeight:im.naturalHeight,alt:im.alt})).catch(()=>({src:im.currentSrc||im.src,loaded:false,alt:im.alt})))));
       record.images=allImages;
+      record.featuredImage=await page.locator('img[src*="rear-speaker-placement-hero-3x2"]').first().evaluate(async im=>{await im.decode();return{src:im.currentSrc||im.src,alt:im.alt,width:im.naturalWidth,height:im.naturalHeight,loaded:im.complete&&im.naturalWidth>0}});
       record.metrics=await root.evaluate(el=>{
         const box=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
         const children=[...el.querySelectorAll('.quick-pick')].map(card=>[...card.children].slice(0,5).map(e=>({class:e.className,...box(e),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight})));
@@ -76,6 +77,7 @@ try {
       }
       if(!m.sourceLinks.length)err('Sources list is missing');
       if(m.sourceLinks.some(s=>!s.href.startsWith('https://')||s.decoration==='none'))err('Source link is not HTTPS and underlined');
+      if(!record.featuredImage.loaded||Math.abs(record.featuredImage.width/record.featuredImage.height-1.5)>.001||!record.featuredImage.alt.trim())err('Featured hero loading, exact 3:2 aspect ratio or alt failed');
       if(allImages.some(i=>!i.loaded||!i.alt.trim()))err('An article image failed loading or lacks alt text');
       record.status=record.errors.length?'FAIL':'AUTOMATED_ASSERTIONS_PASSED_VISUAL_REVIEW_REQUIRED';
 
