@@ -88,6 +88,10 @@ try {
         };
         return {
           innerWidth:window.innerWidth,
+          headings:[...root.querySelectorAll('h2,h3,h4')].map(e=>e.innerText),
+          paragraphs:root.querySelectorAll('p').length,tables:root.querySelectorAll('table').length,
+          hero:(()=>{const e=[...document.images].find(e=>(e.currentSrc||e.src).includes('asus-vivobook-s16-home-desk-3x2'));return e?{loaded:e.complete&&e.naturalWidth>0,w:e.naturalWidth,h:e.naturalHeight,alt:e.alt}:null})(),
+          disclosure:/affiliate links|earn a commission|affiliate disclosure/i.test(document.body.innerText),
           article:rect(root),
           pageWidth:document.documentElement.scrollWidth,
           labels:groups('.quick-label-row'),
@@ -108,13 +112,19 @@ try {
           ).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,100)})),
           sources:[...root.querySelectorAll('.sources a')].map(e=>({
             text:e.textContent,color:getComputedStyle(e).color,
-            background:getComputedStyle(e).backgroundColor
+            background:getComputedStyle(e).backgroundColor,underline:getComputedStyle(e).textDecorationLine
           })),
           links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel,target:e.target}))
         };
       });
       const g = record.geometry;
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
+      check(g.headings.length===45 && g.paragraphs===71 && g.tables===3,'Guide sections or tables missing');
+      check(g.images.length===10,'Expected ten body images');
+      check(g.hero?.loaded && g.hero.w/g.hero.h===1.5,'Hero image is not loaded at actual 3:2');
+      check(g.disclosure,'Affiliate disclosure not visible in page text');
+      check(g.sources.length>0 && g.sources.every(e=>e.color==='rgb(7, 95, 155)'&&e.underline.includes('underline')),'Source links not blue and underlined');
+      check(g.controls.every((e,i)=>e.background===(i%2===0?'rgb(24, 116, 166)':'rgb(45, 122, 85)')),'Retailer blue/green order incorrect');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
       check(g.pageWidth <= g.innerWidth+1, 'Horizontal page overflow');
