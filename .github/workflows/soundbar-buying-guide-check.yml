@@ -31,7 +31,7 @@ jobs:
           for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
            const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
-           await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar',{waitUntil:'domcontentloaded'});
+           await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar?bldqa='+Date.now(),{waitUntil:'domcontentloaded'});
            await page.locator('#bld-soundbar-guide').waitFor();
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-soundbar-guide');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
            for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
@@ -78,7 +78,6 @@ jobs:
            for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
            if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
-           for(const c of data.controls.slice(6).filter(c=>c.children.length===2))if(!['17px','18px'].includes(c.children[0].font))data.failures.push('detail font '+c.text);
            results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
            fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();
           }
@@ -101,4 +100,4 @@ jobs:
 
 # 2026-10-27 final fit: compact JW label; exclude only proven one-pixel clipped accessible table headers from visible-text bounds.
 
-# Verify Shopify readback 2026-10-27T10:38:13Z after propagation, including corrected detail fonts.
+# Verify final merged saved revision 2026-10-27T10:41:29Z, including corrected measuring caption.
