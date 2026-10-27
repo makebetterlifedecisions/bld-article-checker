@@ -24,13 +24,21 @@ jobs:
           fs.mkdirSync('results',{recursive:true});
           const browser=await chromium.launch();
           const results=[];
-          const offerUrls=["https://link.amazon/B0dpoEdI5","https://www.amazon.com.au/Apple-iPhone-256-Promotion-Resistance/dp/B0FQFZH2NR","https://www.amazon.com.au/Samsung-Version-Privacy-Customised-Creative/dp/B0GLXZNTV1","https://www.amazon.com.au/Samsung-Version-Customised-Creative-Battery/dp/B0GLWVMCST"];
-          await Promise.all(offerUrls.map(async(url,i)=>{const c=await browser.newContext({locale:'en-AU'});const p=await c.newPage();try{await p.goto(url,{waitUntil:'domcontentloaded',timeout:45000});await p.waitForTimeout(1000);const cont=p.getByRole('button',{name:'Continue shopping',exact:true});if(await cont.count()){await cont.click();await p.waitForTimeout(2000)}await p.waitForTimeout(1000);fs.writeFileSync(`results/offer-${i}.txt`,p.url()+'\n'+await p.locator('body').innerText());await p.screenshot({path:`results/offer-${i}.png`});}catch(e){fs.writeFileSync(`results/offer-${i}.txt`,String(e))}await c.close()}));
+          const offerUrls=["https://link.amazon/B0dpoEdI5","https://www.amazon.com.au/Apple-iPhone-256-Promotion-Resistance/dp/B0FQFZH2NR","https://www.amazon.com.au/Samsung-Version-Privacy-Customised-Creative/dp/B0GLXZNTV1"];
+          await Promise.all(offerUrls.map(async(url,i)=>{const c=await browser.newContext({locale:'en-AU'});const p=await c.newPage();try{
+           await p.goto('https://www.amazon.com.au/',{waitUntil:'domcontentloaded',timeout:45000});await p.waitForTimeout(1000);
+           if(await p.getByRole('button',{name:'Continue shopping',exact:true}).count())await p.getByRole('button',{name:'Continue shopping',exact:true}).click();
+           await p.waitForTimeout(1000);
+           if(await p.locator('#nav-global-location-popover-link').count()){await p.locator('#nav-global-location-popover-link').click();await p.waitForTimeout(800);if(await p.locator('#GLUXZipUpdateInput').count()){await p.locator('#GLUXZipUpdateInput').fill('2000');await p.locator('#GLUXZipUpdate').click();await p.waitForTimeout(1000);if(await p.locator('#GLUXConfirmClose').count())await p.locator('#GLUXConfirmClose').click();}}
+           await p.goto(url,{waitUntil:'domcontentloaded',timeout:45000});await p.waitForTimeout(1500);if(await p.getByRole('button',{name:'Continue shopping',exact:true}).count()){await p.getByRole('button',{name:'Continue shopping',exact:true}).click();await p.goto(url,{waitUntil:'domcontentloaded',timeout:45000});await p.waitForTimeout(1500);}
+           fs.writeFileSync(`results/offer-${i}.txt`,p.url()+'\n'+await p.locator('body').innerText());await p.screenshot({path:`results/offer-${i}.png`});
+          }catch(e){fs.writeFileSync(`results/offer-${i}.txt`,String(e)+'\n'+p.url()+'\n'+await p.locator('body').innerText().catch(()=>''));}await c.close()}));
           for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
            const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-much-phone-storage-do-you-need?bldqa='+Date.now(),{waitUntil:'domcontentloaded'});
            await page.locator('#bld-phone-storage-guide').waitFor();
+           await page.evaluate(html=>{const old=document.querySelector('#bld-phone-storage-guide');const prev=old.previousElementSibling;if(prev?.tagName==='STYLE'&&prev.textContent.includes('bld-phone-storage-guide'))prev.remove();const t=document.createElement('template');t.innerHTML=html;old.replaceWith(t.content)},fs.readFileSync('pending/phone-storage-worker3.html','utf8'));
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-phone-storage-guide');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
            for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
            await page.waitForTimeout(1000);
@@ -72,7 +80,7 @@ jobs:
            for(const t of data.extra.text)for(const r of t.rects)if(r.x<t.parent.x-1||r.right>t.parent.right+1||r.y<t.parent.y-1||r.bottom>t.parent.bottom+1)data.failures.push('text outside parent '+t.text);
            if(data.pageOverflow)data.failures.push('page overflow');for(const c of data.cards)for(const row of c.rows)if(row.overflow)data.failures.push('card text overflow '+row.cls);
            for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
-           for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
+           for(let i=0;i<6;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===2&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
            if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
            results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
@@ -90,3 +98,5 @@ jobs:
           retention-days: 14
 
 # Baseline: supplied phone-storage article and exact Amazon destinations.
+
+# PREPARED DRAFT rendering only; Amazon exact AU offer verification remains in progress.
