@@ -97,3 +97,5 @@ if(records.some(r=>r.errors.length))process.exitCode=1;
 
 // Recheck narrow shortlist and responsiveness text after correction.
 
+
+// Check corrected guide container naming and table query syntax.
