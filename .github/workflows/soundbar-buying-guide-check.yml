@@ -26,7 +26,7 @@ jobs:
           const results=[];
           // Retain current offer evidence from the same authorised GitHub runner.
           const offerCtx=await browser.newContext(); const offerPage=await offerCtx.newPage();
-          try { await offerPage.goto('https://www.jw.com.au/product/samsung-q600f-q-sers-5-1-2ch-dolby-atmos-soundbar',{waitUntil:'domcontentloaded',timeout:45000});await offerPage.waitForTimeout(1500); fs.writeFileSync('results/q600f-offer.txt',await offerPage.locator('body').innerText());await offerPage.screenshot({path:'results/q600f-offer.png',fullPage:true}); } catch(e) { fs.writeFileSync('results/q600f-offer.txt',String(e)); }
+          try { await offerPage.goto('https://www.jw.com.au/product/samsung-q600f-q-sers-5-1-2ch-dolby-atmos-soundbar',{waitUntil:'domcontentloaded',timeout:45000});await offerPage.waitForTimeout(12000); fs.writeFileSync('results/q600f-offer.txt',await offerPage.locator('body').innerText());await offerPage.screenshot({path:'results/q600f-offer.png',fullPage:true}); } catch(e) { fs.writeFileSync('results/q600f-offer.txt',String(e)); }
           await offerCtx.close();
           for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
