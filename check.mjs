@@ -201,6 +201,35 @@ try {
           record.screenshots.push(filename);
         }
       }
+      if(handle==='how-to-choose-a-soundbar'){
+        record.visitedHistory=[];
+        for(const item of [
+          {kind:'purchase',selector:'.quick-picks .quick-button.retailer-primary',expected:'rgb(255, 255, 255)'},
+          {kind:'source',selector:'.sources a',expected:null}
+        ]){
+          const link=article.locator(item.selector).first();
+          const href=await link.getAttribute('href');
+          await link.scrollIntoViewIfNeeded();
+          const before=await link.evaluate(e=>({color:getComputedStyle(e).color,decoration:getComputedStyle(e).textDecorationLine}));
+          const popupPromise=page.waitForEvent('popup',{timeout:20000});
+          await link.click({timeout:20000});
+          const popup=await popupPromise;
+          await popup.waitForLoadState('domcontentloaded',{timeout:20000}).catch(()=>{});
+          const destination=popup.url();
+          await popup.close();
+          await page.waitForTimeout(250);
+          await link.scrollIntoViewIfNeeded();
+          const after=await link.evaluate(e=>({color:getComputedStyle(e).color,decoration:getComputedStyle(e).textDecorationLine,visible:e.getClientRects().length>0}));
+          const screenshot=resultsDir+'/'+name+'-visited-'+item.kind+'.png';
+          await page.screenshot({path:screenshot});
+          record.screenshots.push(screenshot);
+          record.visitedHistory.push({kind:item.kind,href,destination,openedExternal:destination.startsWith('https://')&&new URL(destination).hostname!==new URL(url).hostname,before,after,screenshot});
+          check(destination.startsWith('https://')&&new URL(destination).hostname!==new URL(url).hostname,'Actual browser-history navigation did not open for '+item.kind);
+          check(after.visible&&after.color===before.color,'Visited '+item.kind+' link color changed after actual browser-history navigation');
+          if(item.expected) check(after.color===item.expected,'Visited purchase link is not white');
+          if(item.kind==='source') check(after.decoration.includes('underline'),'Visited source link is not underlined');
+        }
+      }
       record.notChecked=[
         'Visited-link appearance requires actual visual review',
         'Screenshot evidence requires visual review',
