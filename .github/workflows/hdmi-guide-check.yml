@@ -87,4 +87,4 @@ jobs:
 
 # Verify intrinsic six-row layout with uncontained cards and canonical parent-column queries.
 
-# Verify final theme-safe narrow heading sizing.
+# Verify final theme-safe narrow heading sizing after source-link and compact-card corrections.
