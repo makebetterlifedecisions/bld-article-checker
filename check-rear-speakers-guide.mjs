@@ -37,7 +37,7 @@ try {
         const box=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
         const children=[...el.querySelectorAll('.quick-pick')].map(card=>[...card.children].slice(0,5).map(e=>({class:e.className,...box(e),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight})));
         const cards=[...el.querySelectorAll('.quick-pick')].map(e=>({...box(e),containerName:getComputedStyle(e).containerName,containerType:getComputedStyle(e).containerType,nameFont:getComputedStyle(e.querySelector('.quick-name')).fontSize,labelFont:getComputedStyle(e.querySelector('.quick-label')).fontSize}));
-        const controls=[...el.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e=>({text:(e.innerText||e.textContent).trim(),...box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target,nearestCard:(()=>{const c=e.closest('.quick-pick');return c?box(c):null})(),action:(()=>{const a=e.closest('.quick-actions');return a?box(a):null})()}));
+        const controls=[...el.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e=>({scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,text:(e.innerText||e.textContent).trim(),...box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target,nearestCard:(()=>{const c=e.closest('.quick-pick');return c?box(c):null})(),action:(()=>{const a=e.closest('.quick-actions');return a?box(a):null})()}));
         const tables=[...el.querySelectorAll('.table-scroll, .scroll, .table-wrapper')].map(e=>({class:e.className,...box(e),clientWidth:e.clientWidth,scrollWidth:e.scrollWidth,overflowX:getComputedStyle(e).overflowX,table:e.querySelector('table')?box(e.querySelector('table')):null}));
         const winner=el.querySelector('.winner');
         const winnerData=winner?{...box(winner),children:[...winner.children].map(e=>({class:e.className,...box(e)})),text:winner.innerText}:null;
@@ -67,6 +67,7 @@ try {
       if(m.controls.length!==18)err('Expected 18 product controls across cards, detailed sections and final stacks');
       for(const c of m.controls){
         if(Math.abs(c.h-64)>1)err('Control not 64px high: '+c.text);
+        if(c.scrollHeight>c.clientHeight+2)err('Control clips vertical text: '+c.text);
         if(c.color!=='rgb(255, 255, 255)')err('Control text not white: '+c.text);
         if(c.nearestCard&&(c.x<c.nearestCard.x-1||c.right>c.nearestCard.right+1))err('Card control spills outside card: '+c.text);
         if(c.action&&c.nearestCard&&(Math.abs(c.x-c.action.x)>1||Math.abs(c.w-c.action.w)>1))err('Quick control does not fill its action row: '+c.text);
