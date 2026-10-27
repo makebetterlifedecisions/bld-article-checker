@@ -20,7 +20,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node laptop-desktop-check.mjs
         env:
-          ARTICLE_URL: https://www.betterlifedecisions.com.au/blogs/buying-guides/how-much-laptop-desktop-do-you-need
+          ARTICLE_URL: https://www.betterlifedecisions.com.au/blogs/buying-guides/laptop-vs-desktop-computer
       - uses: actions/upload-artifact@v4
         if: always()
         with:
