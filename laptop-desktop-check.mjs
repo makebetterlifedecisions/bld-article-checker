@@ -73,6 +73,7 @@ try {
         const groups = selector => [...root.querySelectorAll(selector)].map(e => ({text:e.textContent.trim(),...rect(e)}));
         const controls = [...root.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e => ({
           text:e.innerText || e.textContent.trim(), ...rect(e),
+          textBounds:(()=>{const r=document.createRange();r.selectNodeContents(e);return [...r.getClientRects()].filter(r=>r.width&&r.height).map(r=>({x:r.x,y:r.y,w:r.width,h:r.height}));})(),
           color:getComputedStyle(e).color, background:getComputedStyle(e).backgroundColor,
           href:e.href || '', rel:e.rel || '', target:e.target || '',
           card:(()=>{const c=e.closest('.quick-pick');if(!c)return null;const r=c.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})(),
@@ -144,7 +145,7 @@ try {
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
       }
-      for (const control of g.controls) check(Math.abs(control.h-64)<=1, 'Control is not 64px high: '+control.text);
+      for (const control of g.controls) { check(Math.abs(control.h-64)<=1, 'Control is not 64px high: '+control.text); check(control.textBounds.every(t=>t.x>=control.x-1 && t.x+t.w<=control.x+control.w+1 && t.y>=control.y-1 && t.y+t.h<=control.y+control.h+1),'Control text spills outside: '+control.text); }
       for (const control of g.controls.filter(e=>e.card)) {
         check(control.x>=control.card.x-1 && control.x+control.w<=control.card.x+control.card.w+1,
           'Quick control spills outside its card: '+control.text);
