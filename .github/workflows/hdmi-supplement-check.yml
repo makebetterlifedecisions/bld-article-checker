@@ -49,3 +49,5 @@ jobs:
           path: extra-results/
 
 # Recheck final corrected article heading.
+
+# Verify scoped heading rule takes precedence over the theme.
