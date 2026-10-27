@@ -31,7 +31,7 @@ jobs:
            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/do-expensive-hdmi-cables-make-a-difference',{waitUntil:'domcontentloaded'});
            await page.locator('#bld-hdmi-guide').waitFor();
            if(await page.locator('#bld-hdmi-guide .quick-pick').count()!==3)throw new Error('Wrong card count');
-           if(await page.locator('#bld-hdmi-guide a.quick-button,#bld-hdmi-guide a.buy-button').count()!==18)throw new Error('Wrong control count');
+           if(await page.locator('#bld-hdmi-guide a:is(.quick-button,.buy-button),#bld-hdmi-guide .quick-status').count()!==18)throw new Error('Wrong control count');
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-hdmi-guide');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
            for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80)}
            await page.waitForTimeout(1000);
