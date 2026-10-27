@@ -26,6 +26,9 @@ try {
           el.style.setProperty(key.replace(/[A-Z]/g,m=>'-'+m.toLowerCase()),value,'important');
       },test.column);
       await page.evaluate(()=>document.fonts.ready);
+      const docHeight=await page.evaluate(()=>document.documentElement.scrollHeight);
+      for(let y=0;y<docHeight;y+=700){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);}
+      await page.evaluate(()=>scrollTo(0,0));
       const allImages=await root.locator('img').evaluateAll(async imgs=>Promise.all(imgs.map(im=>im.decode().then(()=>({src:im.currentSrc||im.src,loaded:true,naturalWidth:im.naturalWidth,naturalHeight:im.naturalHeight,alt:im.alt})).catch(()=>({src:im.currentSrc||im.src,loaded:false,alt:im.alt})))));
       record.images=allImages;
       record.metrics=await root.evaluate(el=>{
@@ -76,6 +79,18 @@ try {
       if(allImages.some(i=>!i.loaded||!i.alt.trim()))err('An article image failed loading or lacks alt text');
       record.status=record.errors.length?'FAIL':'AUTOMATED_ASSERTIONS_PASSED_VISUAL_REVIEW_REQUIRED';
 
+      if(test.width===1366&&!test.column){
+        const visitUrl='https://www.thegoodguys.com.au/samsung-q-series-914-ch-soundbar-with-subwoofer-and-rear-speaker-2026-hw-q930hxy';
+        const visitPage=await context.newPage();
+        const visitResponse=await visitPage.goto(visitUrl,{waitUntil:'domcontentloaded',timeout:60000}).catch(()=>null);
+        await visitPage.waitForTimeout(500);
+        await visitPage.close();
+        const visitedLink=root.locator('a.quick-button[href="'+visitUrl+'"]').first();
+        await visitedLink.scrollIntoViewIfNeeded();
+        record.actualHistoryVisit={url:visitUrl,httpStatus:visitResponse?visitResponse.status():null,method:'Navigated to retailer in a second page within the same browser context, then returned to the article.'};
+        await visitedLink.screenshot({path:'results/1366-history-visited-link.png'});
+        record.actualHistoryVisit.computedColor=await visitedLink.evaluate(e=>getComputedStyle(e).color);
+      }
       const links=root.locator('a.quick-button,a.buy-button,.sources a');
       record.states=[];
       for(let i=0;i<await links.count();i++){
@@ -94,7 +109,8 @@ try {
         await page.mouse.move(1,1);await page.mouse.up();
         record.states.push({text:(await link.innerText()).trim(),hover,focus,active});
         if(!active.active)err('Could not reach active state for '+(await link.innerText()).trim());
-        if(focus.focused&&focus.outline==='none')err('Keyboard focus has no visible outline: '+(await link.innerText()).trim());
+        if(!focus.focused)err('Actual keyboard Tab focus was not achieved: '+(await link.innerText()).trim());
+        if(focus.outline==='none')err('Keyboard focus has no visible outline: '+(await link.innerText()).trim());
       }
       const cdp=await context.newCDPSession(page);
       await cdp.send('DOM.enable');await cdp.send('CSS.enable');
