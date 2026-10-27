@@ -1,0 +1,82 @@
+name: eARC guide full check
+on:
+  push:
+    paths: ['.github/workflows/earc-guide-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Measure and capture whole article
+        run: |
+          cat > check-earc-guide.mjs <<'BLD_SCRIPT'
+          import { chromium } from 'playwright';
+          import fs from 'node:fs';
+          fs.mkdirSync('results',{recursive:true});
+          const browser=await chromium.launch();
+          const results=[];
+          for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
+           const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
+           const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
+           await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/hdmi-earc-vs-arc-optical-usb-audio',{waitUntil:'domcontentloaded'});
+           await page.locator('#bld-audio-connections').waitFor();
+           if(await page.locator('#bld-audio-connections .quick-pick').count()!==3)throw new Error('Expected exactly three top cards');
+           if(await page.locator('#bld-audio-connections .quick-actions > a.quick-button, #bld-audio-connections .quick-actions > .quick-status').count()!==6)throw new Error('Expected six card actions');
+           if(await page.locator('#bld-audio-connections a.quick-button,#bld-audio-connections .quick-status,#bld-audio-connections a.buy-button,#bld-audio-connections .buy-status').count()!==18)throw new Error('Expected 18 purchase controls including statuses');
+           if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-audio-connections');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
+           for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
+           await page.waitForTimeout(1000);
+           const data=await page.evaluate(()=>{
+           const root=document.querySelector('#bld-audio-connections');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
+           const controls=[...root.querySelectorAll('a.quick-button,.quick-status,a.buy-button,.buy-status')].map(e=>({text:e.textContent,box:box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,padding:getComputedStyle(e).padding,overflow:e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1,children:[...e.children].map(x=>({text:x.textContent,box:box(x),color:getComputedStyle(x).color,font:getComputedStyle(x).fontSize}))}));
+           const cards=[...root.querySelectorAll('.quick-pick')].map(e=>({box:box(e),rows:[...e.children].map(x=>({cls:x.className,box:box(x),overflow:x.scrollWidth>x.clientWidth+1||x.scrollHeight>x.clientHeight+1}))}));
+           return {viewport:innerWidth,article:box(root),pageOverflow:document.documentElement.scrollWidth>innerWidth+1,gridColumns:getComputedStyle(root.querySelector('.quick-picks')).gridTemplateColumns.split(' ').length,quickStatuses:root.querySelectorAll('.quick-status').length,buyStatuses:root.querySelectorAll('.buy-status').length,quickRows:[...root.querySelectorAll('.quick-pick')].map(e=>e.children.length),controls,cards,images:[...document.querySelectorAll('.bld-article__featured img,#bld-audio-connections img')].map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,alt:e.alt,native:[e.naturalWidth,e.naturalHeight],box:box(e)})),sources:[...root.querySelectorAll('.sources a')].map(e=>({text:e.textContent,color:getComputedStyle(e).color,underline:getComputedStyle(e).textDecorationLine.includes('underline')})),links:[...root.querySelectorAll('a.quick-button,a.buy-button')].map(e=>({href:e.href,target:e.target,rel:e.rel})),headings:root.querySelectorAll('h2').length,stacks:[...root.querySelectorAll('.buy-row')].map(box)};
+           });
+           data.states=[];
+           for(const loc of [...await page.locator('#bld-audio-connections a.quick-button,#bld-audio-connections a.buy-button').all(),page.locator('#bld-audio-connections .sources a').first()]){
+           await loc.scrollIntoViewIfNeeded();await loc.hover();const hover=await loc.evaluate(e=>({color:getComputedStyle(e).color,children:[...e.children].map(x=>getComputedStyle(x).color)}));await loc.focus();const focus=await loc.evaluate(e=>({color:getComputedStyle(e).color,outline:getComputedStyle(e).outline,focused:document.activeElement===e}));const r=await loc.boundingBox();await page.mouse.move(r.x+r.width/2,r.y+r.height/2);await page.mouse.down();const active=await loc.evaluate(e=>getComputedStyle(e).color);await page.mouse.move(1,1);await page.mouse.up();data.states.push({hover,focus,active});
+           }
+           const cdp=await ctx.newCDPSession(page);await cdp.send('DOM.enable');await cdp.send('CSS.enable');const doc=await cdp.send('DOM.getDocument');const nodes=await cdp.send('DOM.querySelectorAll',{nodeId:doc.root.nodeId,selector:'#bld-audio-connections a.quick-button,#bld-audio-connections a.buy-button'});for(const nodeId of nodes.nodeIds)await cdp.send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['visited']});data.visited=await page.locator('#bld-audio-connections a.quick-button,#bld-audio-connections a.buy-button').evaluateAll(es=>es.map(e=>({color:getComputedStyle(e).color,children:[...e.children].map(x=>getComputedStyle(x).color)})));await cdp.detach();
+           await page.evaluate(()=>{getSelection()?.removeAllRanges();scrollTo(0,0)});await page.screenshot({path:`results/${tag}-full.png`,fullPage:true});
+           await page.locator('#bld-audio-connections .quick-picks').screenshot({path:`results/${tag}-cards.png`});
+           await page.locator('#bld-audio-connections .sources').screenshot({path:`results/${tag}-sources.png`});
+           data.failures=[];
+           if(data.pageOverflow)data.failures.push('page overflow');
+           if(data.gridColumns!==3)data.failures.push('cards not three equal columns');
+           if(data.quickRows.some(n=>n!==5))data.failures.push('card is not five-row structure');
+           if(data.quickStatuses!==4||data.buyStatuses!==8)data.failures.push('pending destination status count');
+           if(data.controls.length!==18)data.failures.push('purchase control count');
+           if(data.images.some(x=>!x.loaded||!x.alt))data.failures.push('image failed or missing alt');
+           if(data.sources.some(x=>x.color!=='rgb(7, 95, 155)'||!x.underline))data.failures.push('source link style');
+           if(data.links.some(x=>x.target!=='_blank'||!x.rel.includes('sponsored')||!x.rel.includes('noopener')||!x.rel.includes('noreferrer')))data.failures.push('affiliate link attributes');
+           if(data.links.filter(x=>x.href.includes('/itm/116484631900')).length!==3||data.links.filter(x=>x.href.includes('/itm/186826858161')).length!==3)data.failures.push('tracked retailer destinations not repeated in all purchase stacks');for(const c of data.cards)for(const row of c.rows)if(row.overflow)data.failures.push('card text overflow '+row.cls);
+           for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
+           for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
+           if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
+           if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
+           results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
+           fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();if(data.failures.length)break;
+          }
+          await browser.close();if(results.some(x=>x.failures.length))process.exitCode=1;
+          
+          BLD_SCRIPT
+          node check-earc-guide.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: earc-guide-check
+          path: results/
+          retention-days: 14
+
+# Verify intrinsic rows with parent-column breakpoint integration.
+
+# Final fit: compact rear-speaker label; natural model-hyphen breaks at 280px.
