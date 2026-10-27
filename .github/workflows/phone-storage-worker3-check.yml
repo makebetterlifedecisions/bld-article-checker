@@ -1,4 +1,5 @@
 name: Phone storage guide worker 3 check
+# Prepared final positions; genuine Ultra Amazon affiliate link pending.
 on:
   push:
     paths: ['.github/workflows/phone-storage-worker3-check.yml']
@@ -24,7 +25,6 @@ jobs:
           fs.mkdirSync('results',{recursive:true});
           const browser=await chromium.launch();
           const results=[];
-          for(const [i,url] of ["https://www.ebay.com.au/itm/306804691253","https://www.thegoodguys.com.au/apple-iphone-17-256gb-black-mg6j4xa"].entries()){const c=await browser.newContext({locale:'en-AU'});const p=await c.newPage();try{await p.goto(url,{waitUntil:'domcontentloaded',timeout:45000});await p.waitForTimeout(2000);fs.writeFileSync(`results/retailer-${i}.txt`,p.url()+'\n'+await p.locator('body').innerText());await p.screenshot({path:`results/retailer-${i}.png`});}catch(e){fs.writeFileSync(`results/retailer-${i}.txt`,String(e));}await c.close();}
           for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
            const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
