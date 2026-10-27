@@ -52,7 +52,7 @@ jobs:
            await page.locator('#bld-ssd-hdd section.sources').screenshot({path:`results/${tag}-sources.png`});
            data.failures=[];
            if(data.pageOverflow)data.failures.push('page overflow');for(const c of data.cards)for(const row of c.rows)if(row.overflow)data.failures.push('card text overflow '+row.cls);
-           for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
+           for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);for(const child of c.children){if(child.box.x<c.box.x+5||child.box.right>c.box.right-5||child.box.y<c.box.y+5||child.box.bottom>c.box.bottom-5)data.failures.push('control content padding '+c.text)}if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
            for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
            if(data.images.some(x=>x.box.w>0&&x.box.h>0&&!x.loaded)||data.imageProbes.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
@@ -75,3 +75,5 @@ jobs:
 # Final fit: compact rear-speaker label; natural model-hyphen breaks at 280px.
 
 # Recheck canonical narrow model-code specificity correction.
+
+# Verify authorised compact labels with intact exact identities in detail.
