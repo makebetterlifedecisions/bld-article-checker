@@ -32,10 +32,11 @@ try {
       const allImages=await root.locator('img').evaluateAll(async imgs=>Promise.all(imgs.map(im=>im.decode().then(()=>({src:im.currentSrc||im.src,loaded:true,naturalWidth:im.naturalWidth,naturalHeight:im.naturalHeight,alt:im.alt})).catch(()=>({src:im.currentSrc||im.src,loaded:false,alt:im.alt})))));
       record.images=allImages;
       record.featuredImage=await page.locator('img[src*="rear-speaker-placement-hero-3x2"]').first().evaluate(async im=>{await im.decode();return{src:im.currentSrc||im.src,alt:im.alt,width:im.naturalWidth,height:im.naturalHeight,loaded:im.complete&&im.naturalWidth>0}});
+      record.heroOriginal=await page.evaluate(async()=>{const im=new Image();im.src=document.querySelector('img[src*=rear-speaker-placement-hero-3x2]').src.split('?')[0];await im.decode();return{width:im.naturalWidth,height:im.naturalHeight,src:im.src}});
       record.metrics=await root.evaluate(el=>{
         const box=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
         const children=[...el.querySelectorAll('.quick-pick')].map(card=>[...card.children].slice(0,5).map(e=>({class:e.className,...box(e),scrollWidth:e.scrollWidth,clientWidth:e.clientWidth,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight})));
-        const cards=[...el.querySelectorAll('.quick-pick')].map(box);
+        const cards=[...el.querySelectorAll('.quick-pick')].map(e=>({...box(e),containerName:getComputedStyle(e).containerName,containerType:getComputedStyle(e).containerType,nameFont:getComputedStyle(e.querySelector('.quick-name')).fontSize,labelFont:getComputedStyle(e.querySelector('.quick-label')).fontSize}));
         const controls=[...el.querySelectorAll('a.quick-button,a.buy-button,.quick-status,.buy-status')].map(e=>({text:(e.innerText||e.textContent).trim(),...box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,href:e.href,rel:e.rel,target:e.target,nearestCard:(()=>{const c=e.closest('.quick-pick');return c?box(c):null})(),action:(()=>{const a=e.closest('.quick-actions');return a?box(a):null})()}));
         const tables=[...el.querySelectorAll('.table-scroll, .scroll, .table-wrapper')].map(e=>({class:e.className,...box(e),clientWidth:e.clientWidth,scrollWidth:e.scrollWidth,overflowX:getComputedStyle(e).overflowX,table:e.querySelector('table')?box(e.querySelector('table')):null}));
         const winner=el.querySelector('.winner');
@@ -77,7 +78,7 @@ try {
       }
       if(!m.sourceLinks.length)err('Sources list is missing');
       if(m.sourceLinks.some(s=>!s.href.startsWith('https://')||s.decoration==='none'))err('Source link is not HTTPS and underlined');
-      if(!record.featuredImage.loaded||Math.abs(record.featuredImage.width/record.featuredImage.height-1.5)>.001||!record.featuredImage.alt.trim())err('Featured hero loading, exact 3:2 aspect ratio or alt failed');
+      if(!record.featuredImage.loaded||Math.abs(record.featuredImage.width*2-record.featuredImage.height*3)>3||record.heroOriginal.width*2!==record.heroOriginal.height*3||!record.featuredImage.alt.trim())err('Featured hero loading, exact 3:2 aspect ratio or alt failed');
       if(allImages.some(i=>!i.loaded||!i.alt.trim()))err('An article image failed loading or lacks alt text');
       record.status=record.errors.length?'FAIL':'AUTOMATED_ASSERTIONS_PASSED_VISUAL_REVIEW_REQUIRED';
 
@@ -97,14 +98,16 @@ try {
       record.states=[];
       for(let i=0;i<await links.count();i++){
         const link=links.nth(i);
-        await link.scrollIntoViewIfNeeded();
+        await link.evaluate(e=>{const r=e.getBoundingClientRect();const sticky=document.querySelector('#shopify-section-bld-header');const stickyBottom=sticky?Math.max(0,sticky.getBoundingClientRect().bottom):0;window.scrollTo({top:window.scrollY+r.top-Math.max(stickyBottom+24,window.innerHeight*.38),behavior:'instant'});});
+        await page.waitForTimeout(100);
         await link.hover();
         const hover=await link.evaluate(e=>({color:getComputedStyle(e).color,height:e.getBoundingClientRect().height}));
         await link.focus();
         await page.keyboard.press('Shift+Tab');
         await page.keyboard.press('Tab');
         const focus=await link.evaluate(e=>({focused:document.activeElement===e,color:getComputedStyle(e).color,outline:getComputedStyle(e).outlineStyle}));
-        const r=await link.boundingBox();
+        await link.evaluate(e=>e.scrollIntoView({block:'center',inline:'nearest'}));
+        const r=await link.evaluate(e=>{const r=[...e.getClientRects()].find(r=>r.width>0&&r.height>0);return{x:r.x,y:r.y,width:r.width,height:r.height}});
         await page.mouse.move(r.x+r.width/2,r.y+r.height/2);
         await page.mouse.down();
         const active=await link.evaluate(e=>({active:e.matches(':active'),color:getComputedStyle(e).color}));
