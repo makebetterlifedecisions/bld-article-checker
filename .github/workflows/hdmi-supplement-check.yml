@@ -47,3 +47,5 @@ jobs:
         with:
           name: hdmi-supplement
           path: extra-results/
+
+# Recheck final corrected article heading.
