@@ -24,13 +24,17 @@ jobs:
           fs.mkdirSync('results',{recursive:true});
           const browser=await chromium.launch();
           const results=[];
+          // Retain current offer evidence from the same authorised GitHub runner.
+          const offerCtx=await browser.newContext(); const offerPage=await offerCtx.newPage();
+          try { await offerPage.goto('https://www.jw.com.au/product/samsung-q600f-q-sers-5-1-2ch-dolby-atmos-soundbar',{waitUntil:'domcontentloaded',timeout:45000});await offerPage.waitForTimeout(1500); fs.writeFileSync('results/q600f-offer.txt',await offerPage.locator('body').innerText());await offerPage.screenshot({path:'results/q600f-offer.png',fullPage:true}); } catch(e) { fs.writeFileSync('results/q600f-offer.txt',String(e)); }
+          await offerCtx.close();
           for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
            const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar',{waitUntil:'domcontentloaded'});
            await page.locator('#bld-soundbar-guide').waitFor();
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-soundbar-guide');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
-           for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
+           for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
            await page.waitForTimeout(1000);
            const data=await page.evaluate(()=>{
            const root=document.querySelector('#bld-soundbar-guide');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
@@ -46,7 +50,16 @@ jobs:
            await page.evaluate(()=>{getSelection()?.removeAllRanges();scrollTo(0,0)});await page.screenshot({path:`results/${tag}-full.png`,fullPage:true});
            await page.locator('#bld-soundbar-guide .quick-picks').screenshot({path:`results/${tag}-cards.png`});
            await page.locator('#bld-soundbar-guide .sources').screenshot({path:`results/${tag}-sources.png`});
+           data.extra=await page.evaluate(()=>{
+            const root=document.querySelector('#bld-soundbar-guide'), box=e=>{let r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
+            return {labels:[...root.querySelectorAll('.quick-label-row')].map(e=>({outer:box(e),inner:box(e.firstElementChild)})),purchase:[...root.querySelectorAll('a.quick-button')].map(e=>({href:e.href,rel:e.rel,text:e.innerText})),statusCount:root.querySelectorAll('.quick-status').length,styles:root.querySelectorAll('style').length,
+            text:[...root.querySelectorAll('.quick-name,.quick-reason,.quick-label,.button-product,.button-store')].map(e=>{let r=document.createRange();r.selectNodeContents(e);return {text:e.textContent,rects:[...r.getClientRects()].map(x=>({x:x.x,right:x.right,y:x.y,bottom:x.bottom})),parent:box(e.closest('.quick-pick')||e.closest('.quick-button'))}})};
+           });
            data.failures=[];
+           const ls=data.extra.labels;
+           if(Math.max(...ls.map(x=>x.outer.w))-Math.min(...ls.map(x=>x.outer.w))>1)data.failures.push('label widths');
+           for(const l of ls)if(Math.abs((l.inner.y-l.outer.y)-(l.outer.bottom-l.inner.bottom))>1)data.failures.push('label centring');
+           for(const t of data.extra.text)for(const r of t.rects)if(r.x<t.parent.x-1||r.right>t.parent.right+1||r.y<t.parent.y-1||r.bottom>t.parent.bottom+1)data.failures.push('text outside parent '+t.text);
            if(data.pageOverflow)data.failures.push('page overflow');for(const c of data.cards)for(const row of c.rows)if(row.overflow)data.failures.push('card text overflow '+row.cls);
            for(const c of data.controls){if(Math.abs(c.box.h-64)>.5)data.failures.push('control height '+c.text);if(c.overflow)data.failures.push('control overflow '+c.text);if(c.color!=='rgb(255, 255, 255)')data.failures.push('control color '+c.text)}
            for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
@@ -70,4 +83,4 @@ jobs:
 
 # Final fit: compact rear-speaker label; natural model-hyphen breaks at 280px.
 
-# Full eight-layout review requested 27 October 2026.
+# Saved Shopify revision 2026-10-27T10:25:49Z: check eight layouts and offer evidence.
