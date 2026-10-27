@@ -12,12 +12,12 @@ const runTest=async test=>{
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
  try{
- const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
+ const response=await page.goto(url+'?bld-check='+Date.now(),{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
  const article=page.locator('#bld-debt-methods');await article.waitFor();
  await page.evaluate(()=>document.documentElement.style.setProperty('scroll-behavior','auto','important'));
  if(test.column)await article.evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important');},test.column);
- await page.evaluate(()=>document.fonts.ready);
+ await page.evaluate(()=>document.fonts.ready);await article.locator('img').evaluateAll(imgs=>imgs.forEach(im=>im.loading='eager'));
  for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=650){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(100);}
  await page.locator('img').evaluateAll(async imgs=>{await Promise.all(imgs.map(im=>Promise.race([im.decode().catch(()=>{}),new Promise(r=>setTimeout(r,10000))])));});
  record.geometry=await article.evaluate(root=>{
@@ -69,7 +69,7 @@ const runTest=async test=>{
  const heroPath='results/'+name+'-hero.jpg';await page.screenshot({path:heroPath,quality:85});record.screenshots.push(heroPath);
  const heroImage=page.locator('img[src*="debt-repayment-planning-featured-3x2"]').first();await heroImage.scrollIntoViewIfNeeded();await page.waitForTimeout(300);await page.screenshot({path:'results/'+name+'-hero-full.jpg',quality:85});record.screenshots.push('results/'+name+'-hero-full.jpg');
  const bounds=await article.evaluate(e=>{const r=e.getBoundingClientRect();return {y:r.y+scrollY,height:r.height}});
- for(let y=Math.max(0,bounds.y),i=0;y<bounds.y+bounds.height;y+=750,i++){
+ for(let y=Math.max(0,bounds.y-160),i=0;y<bounds.y+bounds.height;y+=750,i++){
  await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);const path='results/'+name+'-'+String(i).padStart(3,'0')+'.jpg';await page.screenshot({path,quality:85});record.screenshots.push(path);
  }
  if(!test.column&&[390,1366].includes(test.width)){
