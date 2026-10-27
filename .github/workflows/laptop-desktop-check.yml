@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts
-      - run: npx playwright install --with-deps chromium
+      - run: google-chrome --version
       - run: node laptop-desktop-check.mjs
         env:
           ARTICLE_URL: https://www.betterlifedecisions.com.au/blogs/buying-guides/laptop-vs-desktop-computer
