@@ -12,9 +12,9 @@ const runTest=async test=>{
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
  try{
- const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:60000});
+ const response=await page.goto(url+"?bldqa=20261027-1114",{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
- const article=page.locator('#bld-phone-5g');await article.waitFor();
+ const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027"]').count()!==1)throw Error('Stale article revision');
  await page.evaluate(()=>document.documentElement.style.setProperty('scroll-behavior','auto','important'));
  if(test.column)await article.evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important');},test.column);
  await page.evaluate(()=>document.fonts.ready);
@@ -36,6 +36,8 @@ const runTest=async test=>{
  controls:[...root.querySelectorAll('.quick-button,.buy-button,.quick-status,.buy-status')].map(e=>({...rect(e),text:e.innerText,classes:e.className,color:getComputedStyle(e).color,background:getComputedStyle(e).backgroundColor})),
  images:[...document.querySelectorAll('img')].filter(e=>root.contains(e)||e.currentSrc.includes('samsung-galaxy-a57-5g-cafe-featured-3x2')).map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,w:e.naturalWidth,h:e.naturalHeight,alt:e.alt})),
  tableDisplay:root.querySelector('.comparison-table')?getComputedStyle(root.querySelector('.comparison-table')).display:null,tableTextOverflow:[...root.querySelectorAll('td')].filter(e=>{const b=e.getBoundingClientRect();const range=document.createRange();range.selectNodeContents(e);return [...range.getClientRects()].some(r=>r.left<b.left-1||r.right>b.right+1);}).map(e=>e.innerText),productGrids:[...root.querySelectorAll('.product-layout')].map(e=>getComputedStyle(e).gridTemplateColumns),contentWidth:root.querySelector('.bld-content').clientWidth,blockOverflow,textOverflow,headings:[...root.querySelectorAll('h2,h3')].map(e=>e.innerText),
+ detailButtons:[...root.querySelectorAll('.buy-button,.buy-status')].map(e=>({...rect(e),font:getComputedStyle(e).fontSize,stack:rect(e.parentElement)})),
+ labelCenters:[...root.querySelectorAll('.quick-label-row')].map(e=>{const r=e.getBoundingClientRect(),t=e.firstElementChild?.getBoundingClientRect();return t?Math.abs((r.y+r.height/2)-(t.y+t.height/2)):999}),
  links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel})),
  outside:[...root.querySelectorAll('p,h2,h3,figure,.quick-picks,.buy-row,.sources')].filter(e=>{const r=e.getBoundingClientRect();return r.left<rr.left-1||r.right>rr.right+1;}).map(e=>e.className||e.tagName)};
  });
@@ -44,7 +46,7 @@ const runTest=async test=>{
  check(g.cards.length===3,'Missing top cards');check(g.winnerCopy.length===1&&g.winnerCopy[0].w>=g.winnerPanel[0].inner-1,'Winner copy squeezed into narrow column');
  check(g.cards.length===3&&Math.max(...g.cards.map(e=>e.y))-Math.min(...g.cards.map(e=>e.y))<=1,'Cards not side by side');
  for(const key of ['labels','primary','secondary']){const a=g[key];check(a.length===3,key+' peer count');for(const f of ['w','h','y','bottom'])if(a.length)check(Math.max(...a.map(e=>e[f]))-Math.min(...a.map(e=>e[f]))<=1,key+' unequal '+f);}
- check(g.controls.length===18,'Expected 18 controls including unavailable statuses');
+ check(g.labelCenters.every(e=>e<=1),'Labels not vertically centered');for(const c of g.detailButtons){check(c.w<=320.5&&c.stack.w<=320.5,'Detail controls exceed 320px');check(c.font===(g.contentWidth<=680?'17px':'18px'),'Detail button typography '+c.font);}check(g.controls.length===18,'Expected 18 controls including unavailable statuses');
  for(const c of g.controls){check(Math.abs(c.h-64)<=1,'Control height: '+c.text);check(c.color==='rgb(255, 255, 255)','Control text color: '+c.text);}
  if(g.contentWidth<=680)check(g.tableDisplay==='block','Mobile table must stack');for(const c of g.controls){const secondary=/secondary|status/.test(c.classes);check(c.background===(secondary?'rgb(45, 122, 85)':'rgb(24, 116, 166)'),'Control background: '+c.text);}check(!g.tableTextOverflow.length,'Table cell text overlap: '+g.tableTextOverflow.join(';'));if(g.contentWidth<=620)check(g.productGrids.every(s=>s.trim().split(/\s+/).length===1),'Product details must stack in narrow article columns');
  check(!g.blockOverflow.length,'Body text outside block: '+g.blockOverflow.join(';'));check(!g.textOverflow.length,'Text overflow: '+g.textOverflow.join(';'));check(!g.outside.length,'Elements outside article: '+g.outside.join(';'));
@@ -74,7 +76,7 @@ const runTest=async test=>{
  for(const state of ['normal','hover','focus-visible','active','visited']){
  await cdp.send('CSS.forcePseudoState',{nodeId:node.nodeId,forcedPseudoClasses:state==='normal'?[]:[state]});
  const computed=await el.evaluate(e=>({color:getComputedStyle(e).color,fill:getComputedStyle(e).webkitTextFillColor}));record.linkStates.push({kind,state,...computed});
- check(computed.color===(kind==='source'?'rgb(7, 95, 155)':'rgb(255, 255, 255)'),'Link state '+kind+' '+state);
+ check(computed.color===(kind==='source'?'rgb(20, 86, 128)':'rgb(255, 255, 255)'),'Link state '+kind+' '+state);
  await el.screenshot({path:'results/state-'+name+'-'+kind+'-'+state+'.png'});
  }
  }
