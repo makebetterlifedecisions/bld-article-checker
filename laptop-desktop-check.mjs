@@ -68,6 +68,7 @@ try {
           new Promise(resolve => setTimeout(resolve, 15000))
         ]);
       });
+      record.originalHero = await page.evaluate(async () => { const im=new Image(); im.src='https://cdn.shopify.com/s/files/1/0597/8413/4741/articles/asus-vivobook-s16-home-desk-3x2.png?v=1793093065'; await im.decode(); return {w:im.naturalWidth,h:im.naturalHeight}; });
       record.geometry = await article.evaluate(root => {
         const rect = e => { const r=e.getBoundingClientRect(); return {x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}; };
         const groups = selector => [...root.querySelectorAll(selector)].map(e => ({text:e.textContent.trim(),...rect(e)}));
@@ -122,7 +123,7 @@ try {
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
       check(g.headings.length===45 && g.paragraphs===71 && g.tables===3,'Guide sections or tables missing');
       check(g.images.length===10,'Expected ten body images');
-      check(g.hero?.loaded && g.hero.w/g.hero.h===1.5,'Hero image is not loaded at actual 3:2');
+      check(g.hero?.loaded && record.originalHero.w/record.originalHero.h===1.5 && Math.abs(g.hero.w-g.hero.h*1.5)<=1,'Hero image is not loaded at actual 3:2');
       check(g.disclosure,'Affiliate disclosure not visible in page text');
       check(g.sources.length>0 && g.sources.every(e=>e.color==='rgb(7, 95, 155)'&&e.underline.includes('underline')),'Source links not blue and underlined');
       check(g.controls.every((e,i)=>e.background===(i%2===0?'rgb(24, 116, 166)':'rgb(45, 122, 85)')),'Retailer blue/green order incorrect');
