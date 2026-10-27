@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install chromium
       - name: Measure and capture whole article
         run: |
           cat > check-soundbar-buying-guide.mjs <<'BLD_SCRIPT'
@@ -46,16 +46,27 @@ jobs:
            for(const loc of [...await page.locator('#bld-soundbar-guide a.quick-button').all(),page.locator('#bld-soundbar-guide .sources a').first()]){
            await loc.scrollIntoViewIfNeeded();await loc.hover();const hover=await loc.evaluate(e=>({color:getComputedStyle(e).color,children:[...e.children].map(x=>getComputedStyle(x).color)}));await loc.focus();const focus=await loc.evaluate(e=>({color:getComputedStyle(e).color,outline:getComputedStyle(e).outline,focused:document.activeElement===e}));const r=await loc.boundingBox();await page.mouse.move(r.x+r.width/2,r.y+r.height/2);await page.mouse.down();const active=await loc.evaluate(e=>getComputedStyle(e).color);await page.mouse.move(1,1);await page.mouse.up();data.states.push({hover,focus,active});
            }
-           const cdp=await ctx.newCDPSession(page);await cdp.send('DOM.enable');await cdp.send('CSS.enable');const doc=await cdp.send('DOM.getDocument');const nodes=await cdp.send('DOM.querySelectorAll',{nodeId:doc.root.nodeId,selector:'#bld-soundbar-guide a.quick-button'});for(const nodeId of nodes.nodeIds)await cdp.send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['visited']});data.visited=await page.locator('#bld-soundbar-guide a.quick-button').evaluateAll(es=>es.map(e=>({color:getComputedStyle(e).color,children:[...e.children].map(x=>getComputedStyle(x).color)})));await cdp.detach();
+           const cdp=await ctx.newCDPSession(page);await cdp.send('DOM.enable');await cdp.send('CSS.enable');const doc=await cdp.send('DOM.getDocument');const nodes=await cdp.send('DOM.querySelectorAll',{nodeId:doc.root.nodeId,selector:'#bld-soundbar-guide a.quick-button,#bld-soundbar-guide .sources a'});for(const nodeId of nodes.nodeIds)await cdp.send('CSS.forcePseudoState',{nodeId,forcedPseudoClasses:['visited']});data.visited=await page.locator('#bld-soundbar-guide a.quick-button').evaluateAll(es=>es.map(e=>({color:getComputedStyle(e).color,children:[...e.children].map(x=>getComputedStyle(x).color)})));await cdp.detach();
            await page.evaluate(()=>{getSelection()?.removeAllRanges();scrollTo(0,0)});await page.screenshot({path:`results/${tag}-full.png`,fullPage:true});
            await page.locator('#bld-soundbar-guide .quick-picks').screenshot({path:`results/${tag}-cards.png`});
            await page.locator('#bld-soundbar-guide .sources').screenshot({path:`results/${tag}-sources.png`});
+           data.keyboard=[];
+           await page.evaluate(()=>{document.body.tabIndex=-1;document.body.focus()});
+           for(let k=0;k<180;k++){await page.keyboard.press('Tab');const a=await page.evaluate(()=>{const e=document.activeElement;if(!e?.matches?.('#bld-soundbar-guide a'))return null;return {href:e.href,color:getComputedStyle(e).color,outlineStyle:getComputedStyle(e).outlineStyle,outlineWidth:getComputedStyle(e).outlineWidth,visible:e.matches(':focus-visible')}});if(a)data.keyboard.push(a)}
+           await page.evaluate(()=>{const e=document.querySelector('#bld-soundbar-guide');e.style.setProperty('scroll-margin','20px')});
            data.extra=await page.evaluate(()=>{
             const root=document.querySelector('#bld-soundbar-guide'), box=e=>{let r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
             return {labels:[...root.querySelectorAll('.quick-label-row')].map(e=>({outer:box(e),inner:box(e.firstElementChild)})),purchase:[...root.querySelectorAll('a.quick-button')].map(e=>({href:e.href,rel:e.rel,text:e.innerText})),statusCount:root.querySelectorAll('.quick-status').length,styles:root.querySelectorAll('style').length,
             text:[...root.querySelectorAll('.quick-name,.quick-reason,.quick-label,.button-product,.button-store')].map(e=>{let r=document.createRange();r.selectNodeContents(e);return {text:e.textContent,rects:[...r.getClientRects()].map(x=>({x:x.x,right:x.right,y:x.y,bottom:x.bottom})),parent:box(e.closest('.quick-pick')||e.closest('.quick-button'))}})};
            });
+           data.contentBounds=await page.evaluate(()=>{
+           const root=document.querySelector('#bld-soundbar-guide'),outer=root.getBoundingClientRect(),bad=[];
+           const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walk.nextNode()){if(!n.textContent.trim()||n.parentElement.closest('style,script'))continue;const range=document.createRange();range.selectNodeContents(n);for(const r of range.getClientRects()){if(r.width<1||r.height<1)continue;if(r.x<outer.x-1||r.right>outer.right+1)bad.push({text:n.textContent.slice(0,100),left:r.x,right:r.right});}}
+           return bad;});
            data.failures=[];
+           if(data.contentBounds.length)data.failures.push('article text outside bounds');
+           if(!data.keyboard.some(x=>x.visible))data.failures.push('real keyboard focus missing');
+           for(const k of data.keyboard)if(k.outlineStyle==='none'||parseFloat(k.outlineWidth)<1)data.failures.push('keyboard focus outline missing');
            const ls=data.extra.labels;
            if(Math.max(...ls.map(x=>x.outer.w))-Math.min(...ls.map(x=>x.outer.w))>1)data.failures.push('label widths');
            for(const l of ls)if(Math.abs((l.inner.y-l.outer.y)-(l.outer.bottom-l.inner.bottom))>1)data.failures.push('label centring');
@@ -83,4 +94,4 @@ jobs:
 
 # Final fit: compact rear-speaker label; natural model-hyphen breaks at 280px.
 
-# Saved Shopify revision 2026-10-27T10:25:49Z: check eight layouts and offer evidence.
+# Saved Shopify revision 2026-10-27T10:25:49Z: complete evidence with keyboard focus and article text bounds.
