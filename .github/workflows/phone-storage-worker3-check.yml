@@ -30,7 +30,7 @@ jobs:
            if(await p.getByRole('button',{name:'Continue shopping',exact:true}).count())await p.getByRole('button',{name:'Continue shopping',exact:true}).click();
            await p.waitForTimeout(1000);
            if(await p.locator('#nav-global-location-popover-link').count()){await p.locator('#nav-global-location-popover-link').click();await p.waitForTimeout(800);fs.writeFileSync(`results/location-${i}.txt`,await p.locator('body').innerText()+'\n'+JSON.stringify(await p.locator('select').evaluateAll(es=>es.map(e=>({id:e.id,options:[...e.options].filter(o=>/Australia/.test(o.text)).map(o=>({text:o.text,value:o.value}))})))));for(const sel of await p.locator('select').all()){const au=await sel.evaluate(e=>[...e.options].find(o=>/Australia/.test(o.text))?.value);if(au){await sel.selectOption(au);await p.waitForTimeout(1000);}}for(const input of await p.locator('input:visible').all()){const id=await input.getAttribute('id');if(/postal|zip/i.test(id||'')){await input.fill('2000');await p.waitForTimeout(1000);}}
-           for(const sel of await p.locator('select').all()){if(await sel.isVisible()){const city=await sel.evaluate(e=>[...e.options].find(o=>/Sydney/i.test(o.text))?.value);if(city)await sel.selectOption(city);}}
+           fs.writeFileSync(`results/location-form-${i}.json`,JSON.stringify(await p.locator('input:visible,select:visible').evaluateAll(es=>es.map(e=>({tag:e.tagName,id:e.id,name:e.name,value:e.value,html:e.outerHTML}))),null,2));for(const sel of await p.locator('select').all()){if(await sel.isVisible()){const city=await sel.evaluate(e=>[...e.options].find(o=>/Sydney/i.test(o.text))?.value);if(city)await sel.selectOption(city);}}
            if(await p.getByRole('button',{name:'Apply',exact:true}).count()){await p.getByRole('button',{name:'Apply',exact:true}).last().click();await p.waitForTimeout(1500);}
            if(await p.locator('#GLUXConfirmClose').isVisible())await p.locator('#GLUXConfirmClose').click();
            fs.writeFileSync(`results/location-after-${i}.txt`,await p.locator('body').innerText());}
@@ -38,7 +38,7 @@ jobs:
            if(i===1&&await p.locator('li[title*="Black"]').first().isVisible()){await p.locator('li[title*="Black"]').first().click();await p.waitForTimeout(1500);}
            fs.writeFileSync(`results/offer-${i}.txt`,p.url()+'\n'+await p.locator('body').innerText());await p.screenshot({path:`results/offer-${i}.png`});
           }catch(e){fs.writeFileSync(`results/offer-${i}.txt`,String(e)+'\n'+p.url()+'\n'+await p.locator('body').innerText().catch(()=>''));}await c.close()}));
-          for(const config of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
+          for(const config of [{w:1366,col:280},{w:390}]){
            const tag=`${config.w}${config.col?'-column-'+config.col:''}`;
            const ctx=await browser.newContext({viewport:{width:config.w,height:1000}});const page=await ctx.newPage();
            await page.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/how-much-phone-storage-do-you-need?bldqa='+Date.now(),{waitUntil:'domcontentloaded'});
