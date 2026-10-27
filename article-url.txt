@@ -1,2 +1,2 @@
-# Soundbar rerun after narrow-column heading adjustment
+# Soundbar rerun after heading wrap correction
 https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar
