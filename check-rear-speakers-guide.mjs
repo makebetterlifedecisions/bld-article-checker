@@ -39,7 +39,7 @@ try {
         const tables=[...el.querySelectorAll('.table-scroll, .scroll, .table-wrapper')].map(e=>({class:e.className,...box(e),clientWidth:e.clientWidth,scrollWidth:e.scrollWidth,overflowX:getComputedStyle(e).overflowX,table:e.querySelector('table')?box(e.querySelector('table')):null}));
         const winner=el.querySelector('.winner');
         const winnerData=winner?{...box(winner),children:[...winner.children].map(e=>({class:e.className,...box(e)})),text:winner.innerText}:null;
-        const stacks=[...el.querySelectorAll('.buy-row')].map(e=>({class:e.className,...box(e),controls:[...e.querySelectorAll('.buy-button')].map(box)}));
+        const stacks=[...el.querySelectorAll('.buy-row')].map(e=>({class:e.className,...box(e),controls:[...e.querySelectorAll('.buy-button,.buy-status')].map(box)}));
         const sourceLinks=[...el.querySelectorAll('.sources a')].map(e=>({text:e.textContent.trim(),href:e.href,color:getComputedStyle(e).color,decoration:getComputedStyle(e).textDecorationLine,outline:getComputedStyle(e).outlineStyle}));
         const inTableScroll=e=>{for(let n=e;n;n=n.parentElement)if(n.matches('.table-scroll,.scroll,.table-wrapper')&&['auto','scroll'].includes(getComputedStyle(n).overflowX))return true;return false};
         const overflow=[...el.querySelectorAll('*')].filter(e=>e.clientWidth>0&&e.clientHeight>0&&e.scrollWidth>e.clientWidth+2&&!inTableScroll(e)).map(e=>({tag:e.tagName,class:typeof e.className==='string'?e.className:'',text:(e.textContent||'').trim().slice(0,90)}));
@@ -57,7 +57,7 @@ try {
       }
       const cardLabels=m.labels;
       if(cardLabels.length!==3)err('Expected three shaded label DIVs');
-      if(cardLabels.length===3&&(Math.max(...cardLabels.map(x=>x.x))-Math.min(...cardLabels.map(x=>x.x))>1||Math.max(...cardLabels.map(x=>x.w))-Math.min(...cardLabels.map(x=>x.w))>1))err('Label DIVs do not share equal width and alignment');
+      if(cardLabels.length===3&&(Math.max(...cardLabels.map(x=>x.y))-Math.min(...cardLabels.map(x=>x.y))>1||Math.max(...cardLabels.map(x=>x.w))-Math.min(...cardLabels.map(x=>x.w))>1))err('Label DIVs do not share equal width and alignment');
       if(m.controls.length!==18)err('Expected 18 product controls across cards, detailed sections and final stacks');
       for(const c of m.controls){
         if(Math.abs(c.h-64)>1)err('Control not 64px high: '+c.text);
