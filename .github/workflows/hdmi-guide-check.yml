@@ -39,7 +39,7 @@ jobs:
            const root=document.querySelector('#bld-hdmi-guide');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
            const imageProbes=await Promise.all([...root.querySelectorAll('img')].map(e=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve({src:i.src,loaded:true});i.onerror=()=>resolve({src:i.src,loaded:false});i.src=e.getAttribute('src')||e.dataset.src||'';if(!i.src)resolve({src:'',loaded:false})})));
            const controls=[...root.querySelectorAll('a:is(.quick-button,.buy-button),.quick-status')].map(e=>({text:e.textContent,box:box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,padding:getComputedStyle(e).padding,overflow:e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1,children:[...e.children].map(x=>({text:x.textContent,box:box(x),color:getComputedStyle(x).color,font:getComputedStyle(x).fontSize}))}));
-           const cards=[...root.querySelectorAll('.quick-pick')].map(e=>({box:box(e),rows:[...e.children].map(x=>({cls:x.className,box:box(x),overflow:x.scrollWidth>x.clientWidth+1}))}));
+           const cards=[...root.querySelectorAll('.quick-pick')].map(e=>({box:box(e),rows:[...e.children].map(x=>({cls:x.className,box:box(x),overflow:x.scrollWidth>x.clientWidth+1||x.scrollHeight>x.clientHeight+1}))}));
            return {debug:[...root.querySelectorAll('.quick-pick,.quick-label-row,.quick-label,.quick-name,.quick-reason,.quick-actions')].map(e=>({cls:e.className,inline:e.getAttribute('style'),font:getComputedStyle(e).font,containerType:getComputedStyle(e).containerType,containerName:getComputedStyle(e).containerName,margin:getComputedStyle(e).margin,padding:getComputedStyle(e).padding})),sheets:[...document.styleSheets].map(s=>({href:s.href,text:s.ownerNode?.textContent?.slice(-2000)})),imageProbes,viewport:innerWidth,article:box(root),pageOverflow:document.documentElement.scrollWidth>innerWidth+1,controls,cards,images:[...document.querySelectorAll('.bld-article__featured img,#bld-hdmi-guide img')].map(e=>({src:e.currentSrc,loaded:e.complete&&e.naturalWidth>0,native:[e.naturalWidth,e.naturalHeight],box:box(e)})),sources:[...root.querySelectorAll('.sources a')].map(e=>({text:e.textContent,color:getComputedStyle(e).color})),headings:root.querySelectorAll('h2').length,stacks:[...root.querySelectorAll('.buy-row')].map(box)};
            });
            for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(80);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
@@ -84,3 +84,5 @@ jobs:
 
 # Verify authorised compact labels with intact exact identities in detail.
 
+
+# Verify intrinsic six-row layout with uncontained cards and canonical parent-column queries.
