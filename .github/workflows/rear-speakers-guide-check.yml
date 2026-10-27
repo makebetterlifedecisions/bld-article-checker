@@ -1,0 +1,31 @@
+name: Rear speaker guide full article check
+on:
+  push:
+    paths: ['.github/workflows/rear-speakers-guide-check.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Run approved full-article checker
+        run: node check.mjs
+        env:
+          ARTICLE_URL: https://www.betterlifedecisions.com.au/blogs/buying-guides/do-you-need-rear-speakers-with-a-soundbar
+          RESULTS_DIR: results
+      - name: Measure detailed stacks, tables, winner, images and states
+        run: node check-rear-speakers-guide.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rear-speakers-guide-check
+          path: results/
+          retention-days: 14
