@@ -78,6 +78,7 @@ jobs:
            for(let i=0;i<5;i++){const rows=data.cards.map(c=>c.rows[i].box);if(Math.max(...rows.map(x=>x.y))-Math.min(...rows.map(x=>x.y))>1)data.failures.push('row alignment '+i);if(i===1&&Math.max(...rows.map(x=>x.h))-Math.min(...rows.map(x=>x.h))>1)data.failures.push('label heights')}
            if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
+           for(const c of data.controls.slice(6).filter(c=>c.children.length===2))if(!['17px','18px'].includes(c.children[0].font))data.failures.push('detail font '+c.text);
            results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
            fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();
           }
@@ -99,3 +100,5 @@ jobs:
 # Saved Shopify revision 2026-10-27T10:25:49Z: complete evidence with keyboard focus and article text bounds.
 
 # 2026-10-27 final fit: compact JW label; exclude only proven one-pixel clipped accessible table headers from visible-text bounds.
+
+# Verify Shopify readback 2026-10-27T10:38:13Z after propagation, including corrected detail fonts.
