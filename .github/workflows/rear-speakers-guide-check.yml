@@ -1,5 +1,5 @@
 name: Rear speaker guide full article check
-# Consolidated article update verification: 2026-10-27
+# Consolidated article update verification: 2026-10-27; narrow layout repairs verified
 on:
   push:
     paths: ['.github/workflows/rear-speakers-guide-check.yml']
