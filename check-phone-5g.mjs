@@ -12,7 +12,7 @@ const runTest=async test=>{
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
  try{
- const response=await page.goto(url+"?bldqa=20261027-1114",{waitUntil:'domcontentloaded',timeout:60000});
+ const response=await page.goto(url+"?bldqa=20261027-1119",{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
  const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027"]').count()!==1)throw Error('Stale article revision');
  await page.evaluate(()=>document.documentElement.style.setProperty('scroll-behavior','auto','important'));
@@ -39,7 +39,7 @@ const runTest=async test=>{
  detailButtons:[...root.querySelectorAll('.buy-button,.buy-status')].map(e=>({...rect(e),font:getComputedStyle(e).fontSize,stack:rect(e.parentElement)})),
  labelCenters:[...root.querySelectorAll('.quick-label-row')].map(e=>{const r=e.getBoundingClientRect(),t=e.firstElementChild?.getBoundingClientRect();return t?Math.abs((r.y+r.height/2)-(t.y+t.height/2)):999}),
  links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel})),
- outside:[...root.querySelectorAll('p,h2,h3,figure,.quick-picks,.buy-row,.sources')].filter(e=>{const r=e.getBoundingClientRect();return r.left<rr.left-1||r.right>rr.right+1;}).map(e=>e.className||e.tagName)};
+ outside:[...root.querySelectorAll('p,h2,h3,figure,.quick-picks,.buy-row,.sources')].filter(e=>{const r=e.getBoundingClientRect();return r.left<rr.left-1||r.right>rr.right+1;}).map(e=>({tag:e.tagName,cls:e.className,text:e.innerText,rect:rect(e),parent:e.parentElement.className}))};
  });
  const g=record.geometry,check=(ok,s)=>{if(!ok)record.errors.push(s);};
  check(g.viewport===test.width,'Viewport mismatch');check(g.pageWidth<=g.viewport+1,'Horizontal page overflow');
