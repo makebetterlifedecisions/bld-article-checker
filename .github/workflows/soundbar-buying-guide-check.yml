@@ -36,6 +36,7 @@ jobs:
            if(config.col)await page.evaluate(w=>{const el=document.querySelector('#bld-soundbar-guide');el.style.setProperty('width',w+'px','important');el.style.setProperty('max-width',w+'px','important')},config.col);
            for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=850){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(200);await page.screenshot({path:`results/${tag}-scroll-${String(y).padStart(6,'0')}.jpg`,type:'jpeg',quality:65})}
            await page.waitForTimeout(1000);
+           fs.writeFileSync(`results/${tag}-article-text.txt`,await page.locator('#bld-soundbar-guide').innerText());
            const data=await page.evaluate(()=>{
            const root=document.querySelector('#bld-soundbar-guide');const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
            const controls=[...root.querySelectorAll('a.quick-button,.quick-status')].map(e=>({text:e.textContent,box:box(e),color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor,padding:getComputedStyle(e).padding,overflow:e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1,children:[...e.children].map(x=>({text:x.textContent,box:box(x),color:getComputedStyle(x).color,font:getComputedStyle(x).fontSize}))}));
@@ -61,9 +62,10 @@ jobs:
            });
            data.contentBounds=await page.evaluate(()=>{
            const root=document.querySelector('#bld-soundbar-guide'),outer=root.getBoundingClientRect(),bad=[];
-           const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walk.nextNode()){if(!n.textContent.trim()||n.parentElement.closest('style,script'))continue;const range=document.createRange();range.selectNodeContents(n);for(const r of range.getClientRects()){if(r.width<1||r.height<1)continue;if(r.x<outer.x-1||r.right>outer.right+1)bad.push({text:n.textContent.slice(0,100),left:r.x,right:r.right});}}
+           const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=walk.nextNode()){if(!n.textContent.trim()||n.parentElement.closest('style,script'))continue;const head=n.parentElement.closest('thead');if(head){const s=getComputedStyle(head);if(s.position==='absolute'&&s.clipPath==='inset(50%)'&&head.getBoundingClientRect().width<=1.1&&head.getBoundingClientRect().height<=1.1)continue;}const range=document.createRange();range.selectNodeContents(n);for(const r of range.getClientRects()){if(r.width<1||r.height<1)continue;if(r.x<outer.x-1||r.right>outer.right+1)bad.push({text:n.textContent.slice(0,100),left:r.x,right:r.right});}}
            return bad;});
            data.failures=[];
+           if(await page.locator('#bld-soundbar-guide').innerText().then(x=>!x.includes('Its live stock check was blocked')||!x.includes('A tape measure runs along a soundbar on a TV cabinet.')))data.failures.push('saved revision not visible');
            if(data.contentBounds.length)data.failures.push('article text outside bounds');
            if(!data.keyboard.some(x=>x.visible))data.failures.push('real keyboard focus missing');
            for(const k of data.keyboard)if(k.outlineStyle==='none'||parseFloat(k.outlineWidth)<1)data.failures.push('keyboard focus outline missing');
@@ -95,3 +97,5 @@ jobs:
 # Final fit: compact rear-speaker label; natural model-hyphen breaks at 280px.
 
 # Saved Shopify revision 2026-10-27T10:25:49Z: complete evidence with keyboard focus and article text bounds.
+
+# 2026-10-27 final fit: compact JW label; exclude only proven one-pixel clipped accessible table headers from visible-text bounds.
