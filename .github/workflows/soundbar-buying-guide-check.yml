@@ -53,7 +53,7 @@ jobs:
            if(data.images.some(x=>!x.loaded))data.failures.push('image not loaded');
            if(data.stacks.some(x=>x.w>320.5||x.x<data.article.x||x.right>data.article.right))data.failures.push('stack width');
            results.push({tag,...data});console.log('CHECK '+tag+' '+JSON.stringify({viewport:data.viewport,articleWidth:data.article.w,failures:data.failures,controlHeights:[...new Set(data.controls.map(x=>x.box.h))],labelHeights:data.cards.map(x=>x.rows[1].box.h),imagesLoaded:data.images.every(x=>x.loaded),headings:data.headings,states:data.states}));
-           fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();if(data.failures.length)break;
+           fs.writeFileSync('results/report.json',JSON.stringify(results,null,2));await ctx.close();
           }
           await browser.close();if(results.some(x=>x.failures.length))process.exitCode=1;
           
@@ -69,3 +69,5 @@ jobs:
 # Verify intrinsic rows with parent-column breakpoint integration.
 
 # Final fit: compact rear-speaker label; natural model-hyphen breaks at 280px.
+
+# Full eight-layout review requested 27 October 2026.
