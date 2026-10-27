@@ -1,2 +1,2 @@
-# Soundbar rerun after responsive table fix
+# Soundbar rerun after narrow-column heading adjustment
 https://www.betterlifedecisions.com.au/blogs/buying-guides/how-to-choose-a-soundbar
