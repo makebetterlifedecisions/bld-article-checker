@@ -1,5 +1,5 @@
 name: Rear speaker guide full article check
-# Consolidated article update verification: 2026-10-27; article-column insets and containment corrected
+# Consolidated article update verification: 2026-10-27; intrinsic card rows and visual evidence
 on:
   push:
     paths: ['.github/workflows/rear-speakers-guide-check.yml']
