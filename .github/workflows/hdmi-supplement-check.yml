@@ -1,0 +1,49 @@
+name: HDMI supplementary geometry and source states
+on:
+  push:
+    paths: ['.github/workflows/hdmi-supplement-check.yml']
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --ignore-scripts
+      - run: |
+          cat > hdmi-extra.mjs <<'JS'
+          import {chromium} from 'playwright';import fs from 'node:fs';
+          const b=await chromium.launch({channel:'chrome'}),results=[];
+          fs.mkdirSync('extra-results',{recursive:true});
+          for(const cfg of [{w:1366,col:280},{w:1366,col:320},{w:360},{w:390},{w:480},{w:680},{w:1280},{w:1366}]){
+          const p=await b.newPage({viewport:{width:cfg.w,height:1000}});
+          await p.goto('https://www.betterlifedecisions.com.au/blogs/buying-guides/do-you-need-hdmi-2-1',{waitUntil:'domcontentloaded'});
+          await p.locator('#bld-hdmi-guide').waitFor();
+          if(cfg.col)await p.locator('#bld-hdmi-guide').evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important')},cfg.col);
+          await p.waitForTimeout(500);
+          const d=await p.locator('#bld-hdmi-guide').evaluate(root=>{
+          const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom}};
+          const labels=[...root.querySelectorAll('.quick-label-row')].map(e=>({outer:box(e),text:box(e.firstElementChild)}));
+          const images=[...root.querySelectorAll('.quick-image')].map(box);
+          const overflow=[...root.querySelectorAll('p,h2,h3,h4,li,.quick-caption,.quick-name,.quick-reason,.quick-label')].filter(e=>getComputedStyle(e).display!=='inline'&&e.clientWidth>0&&(e.scrollWidth>e.clientWidth+1||e.scrollHeight>e.clientHeight+1)).map(e=>({cls:e.className,text:e.textContent.slice(0,120),box:box(e),scroll:[e.scrollWidth,e.scrollHeight]}));
+          return {labels,images,overflow};
+          });
+          d.links=[];for(const loc of await p.locator('#bld-hdmi-guide a:not(.quick-button):not(.buy-button)').all()){
+          await loc.scrollIntoViewIfNeeded();await loc.hover();const hover=await loc.evaluate(e=>getComputedStyle(e).color);await p.keyboard.press('Tab');await loc.focus();const focus=await loc.evaluate(e=>({color:getComputedStyle(e).color,outline:getComputedStyle(e).outline}));const r=await loc.boundingBox();await p.mouse.move(r.x+r.width/2,r.y+r.height/2);await p.mouse.down();const active=await loc.evaluate(e=>getComputedStyle(e).color);await p.mouse.move(1,1);await p.mouse.up();d.links.push({hover,focus,active});}
+          d.failures=[];
+          if(d.overflow.length)d.failures.push('text overflow');
+          if(d.images.some(r=>r.w<20||Math.abs(r.w-r.h)>1))d.failures.push('square image area');
+          if(d.labels.some(r=>Math.abs((r.outer.y+r.outer.h/2)-(r.text.y+r.text.h/2))>1))d.failures.push('label text centering');
+          if(d.links.some(r=>r.hover!=='rgb(7, 95, 155)'||r.focus.color!=='rgb(7, 95, 155)'||r.active!=='rgb(7, 95, 155)'||r.focus.outline.includes('none')))d.failures.push('source states');
+          results.push({cfg,...d});fs.writeFileSync('extra-results/report.json',JSON.stringify(results,null,2));console.log(JSON.stringify({cfg,failures:d.failures,overflow:d.overflow}));await p.close();
+          }await b.close();if(results.some(r=>r.failures.length))process.exitCode=1;
+          JS
+          node hdmi-extra.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hdmi-supplement
+          path: extra-results/
