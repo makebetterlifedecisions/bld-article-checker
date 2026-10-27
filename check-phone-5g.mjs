@@ -12,7 +12,7 @@ const runTest=async test=>{
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
  try{
- const response=await page.goto(url+"?bldqa=20261027-1127",{waitUntil:'domcontentloaded',timeout:60000});
+ let response;for(let attempt=0;attempt<4;attempt++){response=await page.goto(url+"?bldqa="+Date.now()+"-"+test.width+"-"+attempt,{waitUntil:'domcontentloaded',timeout:60000});await page.locator('#bld-phone-5g').waitFor();if(await page.locator('#bld-phone-5g [data-bld-revision="phone-fix-20261027-r4"]').count()===1)break;await page.waitForTimeout(10000);}
  if(!response?.ok())throw Error('HTTP '+response?.status());
  const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027-r4"]').count()!==1)throw Error('Stale article revision');
  await page.evaluate(()=>document.documentElement.style.setProperty('scroll-behavior','auto','important'));
