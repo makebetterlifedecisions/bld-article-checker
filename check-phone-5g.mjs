@@ -12,14 +12,15 @@ const runTest=async test=>{
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
  try{
- const response=await page.goto(url+"?bldqa=20261027-1119",{waitUntil:'domcontentloaded',timeout:60000});
+ const response=await page.goto(url+"?bldqa=20261027-1125",{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
- const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027"]').count()!==1)throw Error('Stale article revision');
+ const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027-r3"]').count()!==1)throw Error('Stale article revision');
  await page.evaluate(()=>document.documentElement.style.setProperty('scroll-behavior','auto','important'));
  if(test.column)await article.evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important');},test.column);
  await page.evaluate(()=>document.fonts.ready);
  for(let y=0;y<await page.evaluate(()=>document.documentElement.scrollHeight);y+=650){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(100);}
  await page.locator('img').evaluateAll(async imgs=>{await Promise.all(imgs.map(im=>Promise.race([im.decode().catch(()=>{}),new Promise(r=>setTimeout(r,10000))])));});
+ record.cssDiagnostics=await article.evaluate(root=>({containerType:getComputedStyle(root.querySelector('.bld-content')).containerType,containerName:getComputedStyle(root.querySelector('.bld-content')).containerName,tableHtml:root.querySelector('table').outerHTML.slice(0,500),tableStyles:[...document.styleSheets].flatMap(s=>{try{return [...s.cssRules].filter(r=>r.cssText.includes('comparison-table')||r.cssText.includes('phone-guide')).map(r=>r.cssText)}catch{return[]}})}));
  record.geometry=await article.evaluate(root=>{
  const rect=e=>{const r=e.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom};};
  const group=s=>[...root.querySelectorAll(s)].map(e=>({text:e.innerText,...rect(e)}));
