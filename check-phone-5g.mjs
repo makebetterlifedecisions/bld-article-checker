@@ -12,9 +12,9 @@ const runTest=async test=>{
  const context=await browser.newContext({viewport:{width:test.width,height:900},locale:'en-AU',timezoneId:'Australia/Sydney'});
  const page=await context.newPage();const record={...test,name,errors:[]};records.push(record);
  try{
- const response=await page.goto(url+"?bldqa=20261027-1125",{waitUntil:'domcontentloaded',timeout:60000});
+ const response=await page.goto(url+"?bldqa=20261027-1127",{waitUntil:'domcontentloaded',timeout:60000});
  if(!response?.ok())throw Error('HTTP '+response?.status());
- const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027-r3"]').count()!==1)throw Error('Stale article revision');
+ const article=page.locator('#bld-phone-5g');await article.waitFor();if(await article.locator('[data-bld-revision="phone-fix-20261027-r4"]').count()!==1)throw Error('Stale article revision');
  await page.evaluate(()=>document.documentElement.style.setProperty('scroll-behavior','auto','important'));
  if(test.column)await article.evaluate((e,w)=>{e.style.setProperty('width',w+'px','important');e.style.setProperty('max-width',w+'px','important');},test.column);
  await page.evaluate(()=>document.fonts.ready);
@@ -42,6 +42,7 @@ const runTest=async test=>{
  links:[...root.querySelectorAll('a[href]')].map(e=>({href:e.href,rel:e.rel})),
  outside:[...root.querySelectorAll('p,h2,h3,figure,.quick-picks,.buy-row,.sources')].filter(e=>{const r=e.getBoundingClientRect();return r.left<rr.left-1||r.right>rr.right+1;}).map(e=>({tag:e.tagName,cls:e.className,text:e.innerText,rect:rect(e),parent:e.parentElement.className}))};
  });
+ if(record.geometry.tableDisplay==='table'&&record.geometry.contentWidth<=680){const c=await context.newCDPSession(page);await c.send('DOM.enable');await c.send('CSS.enable');const doc=await c.send('DOM.getDocument');const node=await c.send('DOM.querySelector',{nodeId:doc.root.nodeId,selector:'#bld-phone-5g table'});record.tableMatched=await c.send('CSS.getMatchedStylesForNode',{nodeId:node.nodeId});}
  const g=record.geometry,check=(ok,s)=>{if(!ok)record.errors.push(s);};
  check(g.viewport===test.width,'Viewport mismatch');check(g.pageWidth<=g.viewport+1,'Horizontal page overflow');
  check(g.cards.length===3,'Missing top cards');check(g.winnerCopy.length===1&&g.winnerCopy[0].w>=g.winnerPanel[0].inner-1,'Winner copy squeezed into narrow column');
