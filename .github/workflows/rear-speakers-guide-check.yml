@@ -22,6 +22,7 @@ jobs:
           ARTICLE_URL: https://www.betterlifedecisions.com.au/blogs/buying-guides/do-you-need-rear-speakers-with-a-soundbar
           RESULTS_DIR: results
       - name: Measure detailed stacks, tables, winner, images and states
+        if: always()
         run: node check-rear-speakers-guide.mjs
       - uses: actions/upload-artifact@v4
         if: always()
