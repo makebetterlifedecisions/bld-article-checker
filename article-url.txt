@@ -1,5 +1,2 @@
-https://www.betterlifedecisions.com.au/blogs/best-picks/best-noise-cancelling-headphones-australia-2026
 https://www.betterlifedecisions.com.au/blogs/buying-guides/what-size-power-supply-do-you-need-for-your-pc
-https://www.betterlifedecisions.com.au/blogs/buying-guides/how-much-spend-gaming-pc-australia
-https://www.betterlifedecisions.com.au/blogs/buying-guides/upgrade-computer-or-replace-it
-https://www.betterlifedecisions.com.au/blogs/buying-guides/windows-pc-vs-mac-which-should-you-buy
+# Recheck container layout after the update
