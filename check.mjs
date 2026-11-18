@@ -92,7 +92,8 @@ try {
           pageWidth:document.documentElement.scrollWidth,
           labels:groups('.quick-label-row'),
           primary:groups('.quick-actions .retailer-primary'),
-          secondary:groups('.quick-actions .retailer-secondary,.quick-actions .quick-status'),
+          secondary:groups('.quick-actions > :nth-child(2)'),
+          tertiary:groups('.quick-actions > :nth-child(3)'),
           controls,
           images:[...root.querySelectorAll('img')].map(e=>({
             src:e.currentSrc||e.src, loaded:e.complete&&e.naturalWidth>0,
@@ -122,14 +123,14 @@ try {
       check(g.images.filter(e=>e.visible).every(e=>e.loaded&&(e.alt.trim()||e.decorative)), 'Visible article image failed loading or alt check');
       if (record.routeType === 'best-picks-or-buying-guide') {
         check(g.labels.length===3, 'Canonical three-card labels missing');
-        for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']]]) {
+        for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']],['tertiary',['h','y']]]) {
           const items=g[key];
           check(items.length===3, key+': expected three peers');
           for (const field of fields) if(items.length) {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        const expectedControls = ({'best-travel-esims-australians': 9, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
+        const expectedControls = ({'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 9, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
