@@ -46,6 +46,7 @@ try {
       await article.waitFor({ state: 'visible', timeout: 20000 });
       if (test.column) {
         await article.evaluate((el,width) => {
+          for (const [key,value] of Object.entries({'box-sizing':'border-box','width':width+'px','max-width':width+'px','min-width':'0'})) el.parentElement.style.setProperty(key,value,'important');
           for (const [name,value] of Object.entries({
             'box-sizing':'border-box',
             'width':width+'px',
