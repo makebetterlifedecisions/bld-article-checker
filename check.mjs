@@ -12,7 +12,7 @@ if (parsed.protocol !== 'https:' || !['www.betterlifedecisions.com.au','betterli
 }
 const resultsDir = process.env.RESULTS_DIR || 'results';
 await fs.mkdir(resultsDir, { recursive: true });
-const browser = await chromium.launch();
+const browser = await chromium.launch({channel:'chrome'});
 const results = [];
 const checks = [
   ...[360,390,480,680,1280,1366].map(width => ({ width })),
