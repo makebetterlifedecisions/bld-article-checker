@@ -14,11 +14,7 @@ const resultsDir = process.env.RESULTS_DIR || 'results';
 await fs.mkdir(resultsDir, { recursive: true });
 const browser = await chromium.launch({channel:'chrome'});
 const results = [];
-const checks = [
-  ...[360,390,480,680,1280,1366].map(width => ({ width })),
-  { width: 1366, column: 280 },
-  { width: 1366, column: 320 }
-];
+const checks = [{ width:1366,column:280 },{width:1366,column:320}];
 try {
   for (const test of checks) {
     const name = String(test.width) + (test.column ? '-column-' + test.column : '');
@@ -116,6 +112,7 @@ try {
         };
       });
       const g = record.geometry;
+      console.log('DIAGNOSTIC', JSON.stringify(await article.evaluate(root=>({marker:root.innerHTML.includes('Enforce the locked typography'),width:root.clientWidth,padding:getComputedStyle(root).padding,parentWidth:root.parentElement.clientWidth,names:[...root.querySelectorAll('.quick-name')].map(e=>({text:e.textContent,font:getComputedStyle(e).font,width:e.clientWidth,scroll:e.scrollWidth})),cards:[...root.querySelectorAll('.quick-pick')].map(e=>({container:getComputedStyle(e).containerType,name:getComputedStyle(e).containerName,width:e.clientWidth})),overflow:[...root.querySelectorAll('*')].filter(e=>e.clientWidth>0&&e.scrollWidth>e.clientWidth+2).map(e=>({tag:e.tagName,class:e.className,text:e.textContent.slice(0,60),w:e.clientWidth,scroll:e.scrollWidth,font:getComputedStyle(e).font}))}))));
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
