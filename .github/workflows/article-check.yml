@@ -12,7 +12,7 @@ permissions:
   contents: read
 jobs:
   prepare:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.urls.outputs.matrix }}
     steps:
@@ -42,7 +42,7 @@ jobs:
           NODE
   check:
     needs: prepare
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
