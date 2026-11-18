@@ -54,7 +54,6 @@ jobs:
         with:
           node-version: '22'
       - run: npm install --ignore-scripts
-      - run: npx playwright install --with-deps chromium
       - name: Check public article
         run: node check.mjs
         env:
