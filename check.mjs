@@ -122,6 +122,8 @@ try {
         const ink=e=>{const range=document.createRange();range.selectNodeContents(e);return range.getBoundingClientRect()};
         return {nameBottom:ink(n).bottom,reasonTop:ink(r).top,reasonBottom:ink(r).bottom,actionsTop:a.getBoundingClientRect().top};
       }));
+      record.textRows=textRows;
+      record.cardStyles=await page.locator('#bld-tv-transmitters .quick-picks, #bld-tv-transmitters .quick-pick, #bld-tv-transmitters .quick-name, #bld-tv-transmitters .quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
       check(textRows.every(t=>t.nameBottom<=t.reasonTop+1&&t.reasonBottom<=t.actionsTop+1),'Card name, reason or buying controls overlap');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
