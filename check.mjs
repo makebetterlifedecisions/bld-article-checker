@@ -117,6 +117,12 @@ try {
       });
       const g = record.geometry;
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
+      const textRows = await page.locator('#bld-tv-transmitters .quick-pick').evaluateAll(cards=>cards.map(c=>{
+        const n=c.querySelector('.quick-name'),r=c.querySelector('.quick-reason'),a=c.querySelector('.quick-actions');
+        const ink=e=>{const range=document.createRange();range.selectNodeContents(e);return range.getBoundingClientRect()};
+        return {nameBottom:ink(n).bottom,reasonTop:ink(r).top,reasonBottom:ink(r).bottom,actionsTop:a.getBoundingClientRect().top};
+      }));
+      check(textRows.every(t=>t.nameBottom<=t.reasonTop+1&&t.reasonBottom<=t.actionsTop+1),'Card name, reason or buying controls overlap');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
       check(g.pageWidth <= g.innerWidth+1, 'Horizontal page overflow');
