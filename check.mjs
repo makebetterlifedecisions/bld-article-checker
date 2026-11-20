@@ -42,7 +42,7 @@ try {
           : 'other';
       const article = record.routeType === 'best-picks-or-buying-guide'
         ? page.locator('article.bld-best-picks').first()
-        : page.locator('#bld-travel-esim-troubleshooting-r7.bld-article').first();
+        : page.locator('article.bld-article').first();
       await article.waitFor({ state: 'visible', timeout: 20000 });
       if (test.column) {
         await article.evaluate((el,width) => {
@@ -57,6 +57,7 @@ try {
           })) el.style.setProperty(name,value,'important');
         }, test.column);
       }
+      await article.locator('details').evaluateAll(es=>es.forEach(e=>e.open=true));
       await page.evaluate(() => document.fonts.ready);
       const documentHeight = await page.evaluate(() => document.documentElement.scrollHeight);
       for (let y = 0; y < documentHeight; y += 700) {
@@ -99,7 +100,7 @@ try {
           images:[...root.querySelectorAll('img')].map(e=>({
             src:e.currentSrc||e.src, loaded:e.complete&&e.naturalWidth>0,
             naturalWidth:e.naturalWidth,naturalHeight:e.naturalHeight,
-            alt:e.alt,decorative:e.getAttribute('aria-hidden')==='true'||!!e.closest('[aria-hidden="true"]'),
+            alt:e.alt,decorative:e.getAttribute('aria-hidden')==='true'||!!e.closest('[aria-hidden="true"]')||e.classList.contains('note-mascot'),
             visible:e.getClientRects().length>0
           })),
           overflow:[...root.querySelectorAll('*')].filter(e=>
@@ -139,14 +140,14 @@ try {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 6, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
+        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 7, 'travel-esim-buying-guide-australia': 7})[handle] ?? 18;
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
-        check(g.controls.length===3,'Expected three tracked future-trip controls');
+        check(g.controls.length===(handle==='zensim-esim-not-working-troubleshooting'?1:3),'Unexpected tracked future-trip control count');
         check(!g.links.some(l=>l.href==='https://esim.holafly.com/'),'Untracked Holafly promotional destination remains');
         const content=await article.innerText();
-        check(content.includes('Safe eSIM check order')&&content.includes('Contact Holafly'),'Original free troubleshooting guidance missing');
+        check(handle==='zensim-esim-not-working-troubleshooting' ? content.includes('Start with these free checks')&&content.includes('When to contact ZenSim') : content.includes('Safe eSIM check order')&&content.includes('Contact Holafly'),'Original free troubleshooting guidance missing');
       }
       for (const control of g.controls) check(Math.abs(control.h-64)<=1, 'Control is not 64px high: '+control.text);
       for (const control of g.controls.filter(e=>e.card)) {
@@ -158,7 +159,7 @@ try {
       for (const control of g.controls.filter(e=>e.href)) {
         check(control.color==='rgb(255, 255, 255)', 'Purchase text is not white: '+control.text);
         check(control.rel.includes('sponsored'),'Buying button lacks sponsored attribution');
-        check(/iwantthatflight\.com\.au\/(?:\?afid=4660|(?:hotels|carhire)\.aspx\?afid=4660)|expedia\.com\/affiliate\?|wotif\.com\/affiliate\?|stayz\.com\.au\/affiliate\?|zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
+        check(/helloroam\.com\/\?via=betterlifedecisions|iwantthatflight\.com\.au\/(?:\?afid=4660|(?:hotels|carhire)\.aspx\?afid=4660)|expedia\.com\/affiliate\?|wotif\.com\/affiliate\?|stayz\.com\.au\/affiliate\?|zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
       }
       for (const link of g.links.filter(e=>/^https?:/.test(e.href) && new URL(e.href).hostname!==parsed.hostname)) {
         check(link.target==='_blank', 'External target missing: '+link.href);
