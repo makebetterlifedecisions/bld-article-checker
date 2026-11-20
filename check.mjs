@@ -117,13 +117,13 @@ try {
       });
       const g = record.geometry;
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
-      const textRows = await page.locator('#bld-travel-esim-buying-guide .quick-pick').evaluateAll(cards=>cards.map(c=>{
+      const textRows = await page.locator('article.bld-best-picks .quick-pick').evaluateAll(cards=>cards.map(c=>{
         const n=c.querySelector('.quick-name'),r=c.querySelector('.quick-reason'),a=c.querySelector('.quick-actions');
         const ink=e=>{const range=document.createRange();range.selectNodeContents(e);return range.getBoundingClientRect()};
         return {nameBottom:ink(n).bottom,reasonTop:ink(r).top,reasonBottom:ink(r).bottom,actionsTop:a.getBoundingClientRect().top};
       }));
       record.textRows=textRows;
-      record.cardStyles=await page.locator('#bld-travel-esim-buying-guide .quick-picks, #bld-travel-esim-buying-guide .quick-pick, #bld-travel-esim-buying-guide .quick-name, #bld-travel-esim-buying-guide .quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
+      record.cardStyles=await page.locator('article.bld-best-picks .quick-picks, article.bld-best-picks .quick-pick, article.bld-best-picks .quick-name, article.bld-best-picks .quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
       check(textRows.every(t=>t.nameBottom<=t.reasonTop+1&&t.reasonBottom<=t.actionsTop+1),'Card name, reason or buying controls overlap');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
@@ -139,7 +139,7 @@ try {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        const expectedControls = ({'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 9, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
+        const expectedControls = ({'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 6, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
