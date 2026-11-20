@@ -117,6 +117,7 @@ try {
         };
       });
       const g = record.geometry;
+      if(handle==='zensim-esim-not-working-troubleshooting') record.diagramColumns=await article.locator('.step-map').evaluateAll(es=>es.map(e=>({width:e.getBoundingClientRect().width,columns:getComputedStyle(e).gridTemplateColumns.split(' ').length})));
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
       const textRows = await page.locator('article.bld-best-picks .quick-pick').evaluateAll(cards=>cards.map(c=>{
         const n=c.querySelector('.quick-name'),r=c.querySelector('.quick-reason'),a=c.querySelector('.quick-actions');
@@ -126,6 +127,7 @@ try {
       record.textRows=textRows;
       record.cardStyles=await page.locator('article.bld-best-picks .quick-picks, article.bld-best-picks .quick-pick, article.bld-best-picks .quick-name, article.bld-best-picks .quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
       check(textRows.every(t=>t.nameBottom<=t.reasonTop+1&&t.reasonBottom<=t.actionsTop+1),'Card name, reason or buying controls overlap');
+      if(record.diagramColumns) check(record.diagramColumns.every(d=>g.article.w>680||d.columns===1),'Narrow explanatory diagrams must use one readable column');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
       check(g.pageWidth <= g.innerWidth+1, 'Horizontal page overflow');
