@@ -42,7 +42,7 @@ try {
           : 'other';
       const article = record.routeType === 'best-picks-or-buying-guide'
         ? page.locator('article.bld-best-picks').first()
-        : page.locator('article.bld-article').first();
+        : page.locator('article.bld-article[id$="-esim-troubleshooting-r7"]').first();
       await article.waitFor({ state: 'visible', timeout: 20000 });
       if (test.column) {
         await article.evaluate((el,width) => {
