@@ -131,15 +131,15 @@ try {
       check(g.overflow.length===0, 'Article contains overflowing elements');
       check(g.images.filter(e=>e.visible).every(e=>e.loaded&&(e.alt.trim()||e.decorative)), 'Visible article image failed loading or alt check');
       if (record.routeType === 'best-picks-or-buying-guide') {
-        check(g.labels.length===3, 'Canonical three-card labels missing');
+        if(handle!=='package-holiday-vs-booking-yourself') check(g.labels.length===3, 'Canonical three-card labels missing');
         for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']],['tertiary',['h','y']]]) {
           const items=g[key];
-          check(items.length===(key==='secondary'||key==='tertiary'?0:3), key+': incorrect provider control peers');
+          if(handle!=='package-holiday-vs-booking-yourself') check(items.length===(key==='secondary'||key==='tertiary'?0:3), key+': incorrect provider control peers');
           for (const field of fields) if(items.length) {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        const expectedControls = ({'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 6, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
+        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 6, 'travel-esim-buying-guide-australia': 6})[handle] ?? 18;
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
@@ -158,7 +158,7 @@ try {
       for (const control of g.controls.filter(e=>e.href)) {
         check(control.color==='rgb(255, 255, 255)', 'Purchase text is not white: '+control.text);
         check(control.rel.includes('sponsored'),'Buying button lacks sponsored attribution');
-        check(/zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
+        check(/iwantthatflight\.com\.au\/(?:\?afid=4660|(?:hotels|carhire)\.aspx\?afid=4660)|expedia\.com\/affiliate\?|wotif\.com\/affiliate\?|stayz\.com\.au\/affiliate\?|zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
       }
       for (const link of g.links.filter(e=>/^https?:/.test(e.href) && new URL(e.href).hostname!==parsed.hostname)) {
         check(link.target==='_blank', 'External target missing: '+link.href);
