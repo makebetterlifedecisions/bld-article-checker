@@ -143,6 +143,10 @@ try {
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
+        check(g.controls.length===3,'Expected three tracked future-trip controls');
+        check(!g.links.some(l=>l.href==='https://esim.holafly.com/'),'Untracked Holafly promotional destination remains');
+        const content=await article.innerText();
+        check(content.includes('Safe eSIM check order')&&content.includes('Contact Holafly'),'Original free troubleshooting guidance missing');
       }
       for (const control of g.controls) check(Math.abs(control.h-64)<=1, 'Control is not 64px high: '+control.text);
       for (const control of g.controls.filter(e=>e.card)) {
