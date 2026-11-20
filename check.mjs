@@ -117,13 +117,13 @@ try {
       });
       const g = record.geometry;
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
-      const textRows = await page.locator('#bld-tv-transmitters .quick-pick').evaluateAll(cards=>cards.map(c=>{
+      const textRows = await page.locator('#bld-travel-esim-buying-guide .quick-pick').evaluateAll(cards=>cards.map(c=>{
         const n=c.querySelector('.quick-name'),r=c.querySelector('.quick-reason'),a=c.querySelector('.quick-actions');
         const ink=e=>{const range=document.createRange();range.selectNodeContents(e);return range.getBoundingClientRect()};
         return {nameBottom:ink(n).bottom,reasonTop:ink(r).top,reasonBottom:ink(r).bottom,actionsTop:a.getBoundingClientRect().top};
       }));
       record.textRows=textRows;
-      record.cardStyles=await page.locator('#bld-tv-transmitters .quick-picks, #bld-tv-transmitters .quick-pick, #bld-tv-transmitters .quick-name, #bld-tv-transmitters .quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
+      record.cardStyles=await page.locator('#bld-travel-esim-buying-guide .quick-picks, #bld-travel-esim-buying-guide .quick-pick, #bld-travel-esim-buying-guide .quick-name, #bld-travel-esim-buying-guide .quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
       check(textRows.every(t=>t.nameBottom<=t.reasonTop+1&&t.reasonBottom<=t.actionsTop+1),'Card name, reason or buying controls overlap');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
       if (test.column) check(Math.abs(g.article.w-test.column)<=1, 'Requested article-column width was not achieved');
@@ -134,7 +134,7 @@ try {
         check(g.labels.length===3, 'Canonical three-card labels missing');
         for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']],['tertiary',['h','y']]]) {
           const items=g[key];
-          check(items.length===3, key+': expected three peers');
+          check(items.length===(key==='secondary'||key==='tertiary'?0:3), key+': incorrect provider control peers');
           for (const field of fields) if(items.length) {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
@@ -153,6 +153,8 @@ try {
       }
       for (const control of g.controls.filter(e=>e.href)) {
         check(control.color==='rgb(255, 255, 255)', 'Purchase text is not white: '+control.text);
+        check(control.rel.includes('sponsored'),'Buying button lacks sponsored attribution');
+        check(/zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
       }
       for (const link of g.links.filter(e=>/^https?:/.test(e.href) && new URL(e.href).hostname!==parsed.hostname)) {
         check(link.target==='_blank', 'External target missing: '+link.href);
