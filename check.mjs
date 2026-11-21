@@ -73,12 +73,12 @@ try {
       record.geometry = await article.evaluate(root => {
         const rect = e => { const r=e.getBoundingClientRect(); return {x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}; };
         const groups = selector => [...root.querySelectorAll(selector)].map(e => ({text:e.textContent.trim(),...rect(e)}));
-        const controls = [...root.querySelectorAll('a.bldu-quick-button,a.bldu-buy-button,.bldu-quick-status,.buy-status')].map(e => ({
+        const controls = [...root.querySelectorAll('a:is(.quick-button,.bldu-quick-button),a:is(.buy-button,.bldu-buy-button),:is(.quick-status,.bldu-quick-status),.buy-status')].map(e => ({
           text:e.innerText || e.textContent.trim(), ...rect(e),
           color:getComputedStyle(e).color, background:getComputedStyle(e).backgroundColor,
           href:e.href || '', rel:e.rel || '', target:e.target || '',
-          card:(()=>{const c=e.closest('.bldu-quick-pick');if(!c)return null;const r=c.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})(),
-          action:(()=>{const a=e.closest('.bldu-quick-actions');if(!a)return null;const r=a.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})()
+          card:(()=>{const c=e.closest(':is(.quick-pick,.bldu-quick-pick)');if(!c)return null;const r=c.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})(),
+          action:(()=>{const a=e.closest(':is(.quick-actions,.bldu-quick-actions)');if(!a)return null;const r=a.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,bottom:r.bottom}})()
         }));
         const inHorizontalScrollRegion = el => {
           for(let n=el;n;n=n.parentElement) {
@@ -92,10 +92,10 @@ try {
           innerWidth:window.innerWidth,
           article:rect(root),
           pageWidth:document.documentElement.scrollWidth,
-          labels:groups('.bldu-quick-label'),
-          primary:groups('.bldu-quick-actions .bldu-retailer-primary'),
-          secondary:groups('.bldu-quick-actions > :nth-child(2)'),
-          tertiary:groups('.bldu-quick-actions > :nth-child(3)'),
+          labels:groups(':is(.quick-label-row,.bldu-quick-label)'),
+          primary:groups(':is(.quick-actions,.bldu-quick-actions) :is(.retailer-primary,.bldu-retailer-primary)'),
+          secondary:groups(':is(.quick-actions,.bldu-quick-actions) > :nth-child(2)'),
+          tertiary:groups(':is(.quick-actions,.bldu-quick-actions) > :nth-child(3)'),
           controls,
           images:[...root.querySelectorAll('img')].map(e=>({
             src:e.currentSrc||e.src, loaded:e.complete&&e.naturalWidth>0,
@@ -119,13 +119,13 @@ try {
       const g = record.geometry;
       if(handle==='zensim-esim-not-working-troubleshooting') record.diagramColumns=await article.locator('.step-map').evaluateAll(es=>es.map(e=>({width:e.getBoundingClientRect().width,columns:getComputedStyle(e).gridTemplateColumns.split(' ').length})));
       const check = (ok,message) => { if (!ok) record.errors.push(message); };
-      const textRows = await page.locator('article.bld-best-picks .bldu-quick-pick').evaluateAll(cards=>cards.map(c=>{
-        const n=c.querySelector('.bldu-quick-name'),r=c.querySelector('.bldu-quick-reason'),a=c.querySelector('.bldu-quick-actions');
+      const textRows = await page.locator('article.bld-best-picks :is(.quick-pick,.bldu-quick-pick)').evaluateAll(cards=>cards.map(c=>{
+        const n=c.querySelector(':is(.quick-name,.bldu-quick-name)'),r=c.querySelector(':is(.quick-reason,.bldu-quick-reason)'),a=c.querySelector(':is(.quick-actions,.bldu-quick-actions)');
         const ink=e=>{const range=document.createRange();range.selectNodeContents(e);return range.getBoundingClientRect()};
         return {nameBottom:ink(n).bottom,reasonTop:ink(r).top,reasonBottom:ink(r).bottom,actionsTop:a.getBoundingClientRect().top};
       }));
       record.textRows=textRows;
-      record.cardStyles=await page.locator('article.bld-best-picks .bldu-quick-picks, article.bld-best-picks .bldu-quick-pick, article.bld-best-picks .bldu-quick-name, article.bld-best-picks .bldu-quick-reason').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
+      record.cardStyles=await page.locator('article.bld-best-picks :is(.quick-picks,.bldu-quick-picks), article.bld-best-picks :is(.quick-pick,.bldu-quick-pick), article.bld-best-picks :is(.quick-name,.bldu-quick-name), article.bld-best-picks :is(.quick-reason,.bldu-quick-reason)').evaluateAll(es=>es.map(e=>({cls:e.className,inline:e.getAttribute('style'),rows:getComputedStyle(e).gridTemplateRows,height:getComputedStyle(e).height,min:getComputedStyle(e).minHeight})));
       check(textRows.every(t=>t.nameBottom<=t.reasonTop+1&&t.reasonBottom<=t.actionsTop+1),'Card name, reason or buying controls overlap');
       if(record.diagramColumns) check(record.diagramColumns.every(d=>g.article.w>680||d.columns===1),'Narrow explanatory diagrams must use one readable column');
       check(g.innerWidth === test.width, 'Requested viewport was not achieved');
@@ -137,12 +137,12 @@ try {
         if(handle!=='package-holiday-vs-booking-yourself') check(g.labels.length===3, 'Canonical three-card labels missing');
         for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']],['tertiary',['h','y']]]) {
           const items=g[key];
-          if(handle!=='package-holiday-vs-booking-yourself') check(items.length===(key==='secondary'||key==='tertiary'?0:3), key+': incorrect provider control peers');
+          if(handle!=='package-holiday-vs-booking-yourself') check(items.length===(key==='tertiary'?0:key==='secondary'?(handle==='what-size-pc-case-do-you-need'?3:0):3), key+': incorrect provider control peers');
           for (const field of fields) if(items.length) {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 7, 'travel-esim-buying-guide-australia': 7})[handle] ?? 6;
+        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 7, 'travel-esim-buying-guide-australia': 7})[handle] ?? (handle==='what-size-pc-case-do-you-need'?12:6);
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
@@ -161,7 +161,7 @@ try {
       for (const control of g.controls.filter(e=>e.href)) {
         check(control.color==='rgb(255, 255, 255)', 'Purchase text is not white: '+control.text);
         check(control.rel.includes('sponsored'),'Buying button lacks sponsored attribution');
-        check(/ebay\.com\.au\/itm\/[0-9]+\?.*campid=5339204720|helloroam\.com\/\?via=betterlifedecisions|iwantthatflight\.com\.au\/(?:\?afid=4660|(?:hotels|carhire)\.aspx\?afid=4660)|expedia\.com\/affiliate\?|wotif\.com\/affiliate\?|stayz\.com\.au\/affiliate\?|zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
+        check(/ebay\.com\.au\/itm\/[0-9]+\?.*campid=5339204720|link\.amazon\/B0biK5jbz|helloroam\.com\/\?via=betterlifedecisions|iwantthatflight\.com\.au\/(?:\?afid=4660|(?:hotels|carhire)\.aspx\?afid=4660)|expedia\.com\/affiliate\?|wotif\.com\/affiliate\?|stayz\.com\.au\/affiliate\?|zensim\.com\/\?via=better-life-decisions-7qjh|thesimshop\.com\.au\/partner\/better-life-decisions\/|simbye\.com\/\?ref=hgbielyd|roamza\.com\.au\/\?ref=betterlifedelbs/.test(control.href),'Unexpected untracked buying destination');
       }
       for (const link of g.links.filter(e=>/^https?:/.test(e.href) && new URL(e.href).hostname!==parsed.hostname)) {
         check(link.target==='_blank', 'External target missing: '+link.href);
@@ -169,7 +169,7 @@ try {
         if(/link\.amazon\/|[?&](tag|campid)=/.test(link.href)) check(link.rel.includes('sponsored'), 'Affiliate sponsored missing: '+link.href);
       }
       record.states=[];
-      const buttons=article.locator('a.bldu-quick-button,a.bldu-buy-button,.sources a');
+      const buttons=article.locator('a:is(.quick-button,.bldu-quick-button),a:is(.buy-button,.bldu-buy-button),.sources a');
       for(let i=0;i<await buttons.count();i++){
         const b=buttons.nth(i);
         await b.evaluate(e=>{
@@ -181,7 +181,7 @@ try {
         });
         await page.waitForTimeout(100);
         const states={label:await b.innerText()};
-        const expected=await b.evaluate(e=>e.matches('a.bldu-quick-button,a.bldu-buy-button')?'rgb(255, 255, 255)':getComputedStyle(e).color);
+        const expected=await b.evaluate(e=>e.matches('a:is(.quick-button,.bldu-quick-button),a:is(.buy-button,.bldu-buy-button)')?'rgb(255, 255, 255)':getComputedStyle(e).color);
         await b.hover({timeout:10000});
         states.hover=await b.evaluate(e=>({color:getComputedStyle(e).color,height:e.getBoundingClientRect().height}));
         await b.focus();
@@ -200,7 +200,7 @@ try {
         if(b) {
           check(states.active?.active===true, 'Active state was not actually achieved');
           check(states.focus.focused&&states.focus.outline!=='none', 'Keyboard-focus visibility needs review');
-          if(await b.evaluate(e=>e.matches('a.bldu-quick-button,a.bldu-buy-button'))) {
+          if(await b.evaluate(e=>e.matches('a:is(.quick-button,.bldu-quick-button),a:is(.buy-button,.bldu-buy-button)'))) {
             check(states.hover?.color==='rgb(255, 255, 255)', 'Purchase text color changed on hover: '+states.label);
             check(states.focus.color==='rgb(255, 255, 255)', 'Purchase text color changed on focus: '+states.label);
             check(states.active?.color==='rgb(255, 255, 255)', 'Purchase text color changed on active: '+states.label);
