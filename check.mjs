@@ -137,12 +137,12 @@ try {
         if(handle!=='package-holiday-vs-booking-yourself') check(g.labels.length===3, 'Canonical three-card labels missing');
         for (const [key,fields] of [['labels',['w','h','y','bottom']],['primary',['h','y']],['secondary',['h','y']],['tertiary',['h','y']]]) {
           const items=g[key];
-          if(handle!=='package-holiday-vs-booking-yourself') check(items.length===(key==='tertiary'?(handle==='upgrade-computer-or-replace-it'?3:0):3), key+': incorrect provider control peers');
+          if(handle!=='package-holiday-vs-booking-yourself') check(items.length===(key==='tertiary'?(['upgrade-computer-or-replace-it','what-size-pc-case-do-you-need'].includes(handle)?3:0):3), key+': incorrect provider control peers');
           for (const field of fields) if(items.length) {
             check(Math.max(...items.map(e=>e[field]))-Math.min(...items.map(e=>e[field]))<=1, key+': unequal '+field);
           }
         }
-        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 7, 'travel-esim-buying-guide-australia': 7})[handle] ?? (handle==='upgrade-computer-or-replace-it'?18:12);
+        const expectedControls = ({'package-holiday-vs-booking-yourself':6, 'best-bluetooth-tv-transmitters-australia': 30, 'best-travel-esims-australians': 7, 'travel-esim-buying-guide-australia': 7})[handle] ?? (['upgrade-computer-or-replace-it','what-size-pc-case-do-you-need'].includes(handle)?18:12);
         check(g.controls.length===expectedControls, 'Expected '+expectedControls+' purchase/status controls for this article route');
       } else {
         check(await article.evaluate(el=>el.innerText.trim().length>0), 'Troubleshooting article content is empty');
